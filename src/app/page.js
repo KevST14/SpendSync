@@ -1,9 +1,10 @@
 // app/page.js
-"use client"; // Make this page client-side to enable data fetching and state management
-
+"use client";
 import { useEffect, useState } from 'react';
 import StatsCard from './components/StatsCard';
 import ChartCard from './components/ChartCard';
+import Header from './components/Header';
+import Loader from './components/Loader';
 import { fetchData } from './utils/fetchData';
 
 export default function DashboardPage() {
@@ -39,11 +40,11 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="p-6 bg-background text-textPrimary">
-      <h1 className="text-3xl font-bold mb-6">Dashboard Overview</h1>
+    <div className="p-6 bg-background text-textPrimary min-h-screen">
+      <Header />
 
       {/* Stats Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {statsData.map((stat, index) => (
           <StatsCard
             key={index}
@@ -56,7 +57,14 @@ export default function DashboardPage() {
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {chartData && <ChartCard title="Revenue Over Time" chartData={chartData} chartType="line" />}
+        {chartData ? (
+          <>
+            <ChartCard title="Revenue Over Time" chartData={chartData} chartType="line" />
+            <ChartCard title="Product Sales" chartData={chartData} chartType="bar" />
+          </>
+        ) : (
+          <Loader />
+        )}
       </div>
     </div>
   );
