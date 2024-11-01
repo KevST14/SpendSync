@@ -91,37 +91,123 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
 }
 
-/* Sidebar Styles */
-.sidebar {
+.stat-card {
   background-color: var(--surface-color);
-  width: 16rem;
-  height: 100vh;
   padding: 1.5rem;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
 }
 
-.sidebar h2 {
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.chart-card {
+  background-color: var(--surface-color);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar Layout Enforcement */
+.sidebar {
+  width: 16rem;
+  background-color: var(--surface-color);
+  padding: 1.5rem;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-header h2 {
   color: var(--primary-color);
   font-size: 1.75rem;
   font-weight: bold;
 }
 
-.sidebar p {
+.sidebar-header p {
   color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
-.sidebar button {
-  color: var(--text-secondary);
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
   font-size: 1rem;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
+  color: var(--text-secondary);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.sidebar button:hover {
+.nav-item:hover {
   background-color: var(--primary-color);
   color: var(--text-primary);
+}
+
+.nav-item.active {
+  background-color: var(--primary-color);
+  color: var(--text-primary);
+}
+
+/* Header and User Info */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: var(--surface-color);
+  border-radius: 0.5rem;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header .search-bar {
+  position: relative;
+}
+
+.header .search-bar input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+}
+
+.header .search-bar input::placeholder {
+  color: var(--text-secondary);
+}
+
+.header .search-bar i {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+}
+
+.header .user-info {
+  display: flex;
+  align-items: center;
+}
+
+.header .user-info .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 0.75rem;
 }
 
 /* Animations */

@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { FaTachometerAlt, FaWallet, FaChartPie, FaFileAlt, FaCog } from "react-icons/fa";
 
 export default function Sidebar() {
   const [active, setActive] = useState("Dashboard");
@@ -12,45 +13,28 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 h-screen bg-surface p-5 shadow-lg flex flex-col">
-      <div className="mb-10">
-        <h2 className="text-primary text-2xl font-bold mb-2">SpendSync</h2>
-        <p className="text-secondary">Personal Finance Tracker</p>
+    <aside className="sidebar w-64 h-screen bg-surface p-6 shadow-lg flex flex-col">
+      <div className="sidebar-header flex items-center mb-10">
+        <img src="https://via.placeholder.com/50" alt="Logo" className="logo rounded-full shadow-md mr-3" />
+        <h2 className="text-primary font-bold text-2xl">SpendSync</h2>
       </div>
-      <nav className="flex flex-col space-y-4">
-        <button 
-          onClick={() => handleNavigation("Dashboard")}
-          className={`text-textSecondary text-lg font-medium py-2 px-3 rounded-lg transition-colors ${
-            active === "Dashboard" ? "bg-primary text-textPrimary" : "hover:bg-surface-color"
-          }`}
-        >
-          Dashboard
-        </button>
-        <button 
-          onClick={() => handleNavigation("Transactions")}
-          className={`text-textSecondary text-lg font-medium py-2 px-3 rounded-lg transition-colors ${
-            active === "Transactions" ? "bg-primary text-textPrimary" : "hover:bg-surface-color"
-          }`}
-        >
-          Transactions
-        </button>
-        <button 
-          onClick={() => handleNavigation("Reports")}
-          className={`text-textSecondary text-lg font-medium py-2 px-3 rounded-lg transition-colors ${
-            active === "Reports" ? "bg-primary text-textPrimary" : "hover:bg-surface-color"
-          }`}
-        >
-          Reports
-        </button>
-        <button 
-          onClick={() => handleNavigation("Settings")}
-          className={`text-textSecondary text-lg font-medium py-2 px-3 rounded-lg transition-colors ${
-            active === "Settings" ? "bg-primary text-textPrimary" : "hover:bg-surface-color"
-          }`}
-        >
-          Settings
-        </button>
-      </nav>
+      <ul className="nav-links flex flex-col gap-4">
+        <li className={`nav-item ${active === "Dashboard" ? "active" : ""}`} onClick={() => handleNavigation("Dashboard")}>
+          <FaTachometerAlt className="mr-3" /> Dashboard
+        </li>
+        <li className={`nav-item ${active === "Expenses" ? "active" : ""}`} onClick={() => handleNavigation("Expenses")}>
+          <FaWallet className="mr-3" /> Expenses
+        </li>
+        <li className={`nav-item ${active === "Budgets" ? "active" : ""}`} onClick={() => handleNavigation("Budgets")}>
+          <FaChartPie className="mr-3" /> Budgets
+        </li>
+        <li className={`nav-item ${active === "Reports" ? "active" : ""}`} onClick={() => handleNavigation("Reports")}>
+          <FaFileAlt className="mr-3" /> Reports
+        </li>
+        <li className={`nav-item ${active === "Settings" ? "active" : ""}`} onClick={() => handleNavigation("Settings")}>
+          <FaCog className="mr-3" /> Settings
+        </li>
+      </ul>
     </aside>
   );
 }

@@ -1,74 +1,55 @@
 // app/page.js
-"use client";
-import { useEffect, useState } from 'react';
-import StatsCard from './components/StatsCard';
-import ChartCard from './components/ChartCard';
-import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import Loader from './components/Loader';
-import { fetchData } from './utils/fetchData';
 
 export default function DashboardPage() {
-  const [statsData, setStatsData] = useState([]);
-  const [chartData, setChartData] = useState(null);
-
-  useEffect(() => {
-    async function loadData() {
-      const stats = await fetchData('https://jsonplaceholder.typicode.com/posts'); // Replace with your API URL
-      setStatsData([
-        { icon: 'fa-users', title: 'Total Users', value: stats.length },
-        { icon: 'fa-shopping-bag', title: 'Total Sales', value: `$${(stats.length * 500).toLocaleString()}` },
-        { icon: 'fa-chart-line', title: 'Revenue', value: `$${(stats.length * 300).toLocaleString()}` },
-        { icon: 'fa-percent', title: 'Growth', value: '+24.5%' },
-      ]);
-
-      setChartData({
-        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-        datasets: [
-          {
-            label: 'Revenue',
-            data: stats.slice(0, 6).map((_, index) => (index + 1) * 10000),
-            borderColor: '#4a00e0',
-            backgroundColor: 'rgba(74, 0, 224, 0.2)',
-            tension: 0.4,
-          },
-        ],
-      });
-    }
-
-    loadData();
-  }, []);
-
   return (
-    <div className="flex min-h-screen">
+    <div className="dashboard flex">
       <Sidebar />
-      <div className="flex-1 p-6 bg-background text-textPrimary">
-        <Header />
+      <main className="main-content flex-1 p-6">
+        <header className="header mb-6 p-4 bg-surface rounded-lg shadow-lg flex justify-between items-center">
+          <h1 className="text-2xl font-bold">Welcome to SpendSync</h1>
+          <div className="user-info flex items-center">
+            <img src="https://via.placeholder.com/40" alt="User Avatar" className="avatar rounded-full mr-3" />
+            <span>John Doe</span>
+          </div>
+        </header>
+        
+        {/* Financial Overview Section */}
+        <section className="financial-overview">
+          <h2 className="text-xl font-bold mb-4">Financial Overview</h2>
+          <div className="stats-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {/* Monthly Expenses Card */}
+            <div className="stat-card bg-surface p-6 rounded-lg shadow-md">
+              <h3 className="text-secondary">Monthly Expenses</h3>
+              <p className="text-3xl font-bold">$2,345</p>
+            </div>
+            {/* Budget Overview Card */}
+            <div className="stat-card bg-surface p-6 rounded-lg shadow-md">
+              <h3 className="text-secondary">Budget Overview</h3>
+              <p className="text-3xl font-bold">$4,000</p>
+              <p className="text-success mt-1">75% Utilized</p>
+            </div>
+            {/* Savings Goals Card */}
+            <div className="stat-card bg-surface p-6 rounded-lg shadow-md">
+              <h3 className="text-secondary">Savings Goals</h3>
+              <p className="text-3xl font-bold">$1,200</p>
+              <p className="text-warning mt-1">60% to Goal</p>
+            </div>
+          </div>
 
-        {/* Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {statsData.map((stat, index) => (
-            <StatsCard
-              key={index}
-              icon={stat.icon}
-              title={stat.title}
-              value={stat.value}
-            />
-          ))}
-        </div>
-
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {chartData ? (
-            <>
-              <ChartCard title="Revenue Over Time" chartData={chartData} chartType="line" />
-              <ChartCard title="Product Sales" chartData={chartData} chartType="bar" />
-            </>
-          ) : (
-            <Loader />
-          )}
-        </div>
-      </div>
+          {/* Charts Section */}
+          <div className="charts-container grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="chart-card bg-surface p-6 rounded-lg shadow-md">
+              <h3 className="text-secondary mb-3">Expenses Over Time</h3>
+              <div id="expensesChart"></div>
+            </div>
+            <div className="chart-card bg-surface p-6 rounded-lg shadow-md">
+              <h3 className="text-secondary mb-3">Budget Breakdown</h3>
+              <div id="budgetChart"></div>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
