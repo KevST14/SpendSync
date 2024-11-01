@@ -9,6 +9,30 @@ const statsData = [
   { icon: 'fa-percent', title: 'Growth', value: '+24.5%' },
 ];
 
+const lineChartData = {
+  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+  datasets: [
+    {
+      label: 'Revenue',
+      data: [10000, 15000, 8000, 20000, 30000, 25000],
+      borderColor: '#4a00e0',
+      backgroundColor: 'rgba(74, 0, 224, 0.2)',
+      tension: 0.4,
+    },
+  ],
+};
+
+const barChartData = {
+  labels: ['Product A', 'Product B', 'Product C', 'Product D'],
+  datasets: [
+    {
+      label: 'Sales',
+      data: [5000, 10000, 7000, 15000],
+      backgroundColor: '#8e2de2',
+    },
+  ],
+};
+
 export default function DashboardPage() {
   return (
     <div className="p-6 bg-background text-textPrimary">
@@ -28,8 +52,8 @@ export default function DashboardPage() {
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ChartCard title="Sales Analytics" chartId="salesChart" />
-        <ChartCard title="User Growth" chartId="userGrowthChart" />
+        <ChartCard title="Revenue Over Time" chartData={lineChartData} chartType="line" />
+        <ChartCard title="Product Sales" chartData={barChartData} chartType="bar" />
       </div>
     </div>
   );
