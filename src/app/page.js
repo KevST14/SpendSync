@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import StatsCard from './components/StatsCard';
 import ChartCard from './components/ChartCard';
 import Header from './components/Header';
+import Sidebar from './components/Sidebar';
 import Loader from './components/Loader';
 import { fetchData } from './utils/fetchData';
 
@@ -21,7 +22,6 @@ export default function DashboardPage() {
         { icon: 'fa-percent', title: 'Growth', value: '+24.5%' },
       ]);
 
-      // Example chart data
       setChartData({
         labels: ['January', 'February', 'March', 'April', 'May', 'June'],
         datasets: [
@@ -40,31 +40,34 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="p-6 bg-background text-textPrimary min-h-screen">
-      <Header />
+    <div className="flex min-h-screen">
+      <Sidebar />
+      <div className="flex-1 p-6 bg-background text-textPrimary">
+        <Header />
 
-      {/* Stats Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {statsData.map((stat, index) => (
-          <StatsCard
-            key={index}
-            icon={stat.icon}
-            title={stat.title}
-            value={stat.value}
-          />
-        ))}
-      </div>
+        {/* Stats Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {statsData.map((stat, index) => (
+            <StatsCard
+              key={index}
+              icon={stat.icon}
+              title={stat.title}
+              value={stat.value}
+            />
+          ))}
+        </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {chartData ? (
-          <>
-            <ChartCard title="Revenue Over Time" chartData={chartData} chartType="line" />
-            <ChartCard title="Product Sales" chartData={chartData} chartType="bar" />
-          </>
-        ) : (
-          <Loader />
-        )}
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {chartData ? (
+            <>
+              <ChartCard title="Revenue Over Time" chartData={chartData} chartType="line" />
+              <ChartCard title="Product Sales" chartData={chartData} chartType="bar" />
+            </>
+          ) : (
+            <Loader />
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-// tailwind.config.js
 module.exports = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
@@ -16,9 +15,6 @@ module.exports = {
         surface: '#1a1a2e',
         textPrimary: '#ffffff',
         textSecondary: '#b3b3b3',
-        success: '#00ff9d',
-        warning: '#ffd700',
-        danger: '#ff4757',
       },
       boxShadow: {
         custom: '0 10px 20px rgba(0, 0, 0, 0.2)',
