@@ -1,39 +1,43 @@
 // app/page.js
+"use client"; // Make this page client-side to enable data fetching and state management
+
+import { useEffect, useState } from 'react';
 import StatsCard from './components/StatsCard';
 import ChartCard from './components/ChartCard';
-
-const statsData = [
-  { icon: 'fa-users', title: 'Total Users', value: '15,687' },
-  { icon: 'fa-shopping-bag', title: 'Total Sales', value: '$124,563' },
-  { icon: 'fa-chart-line', title: 'Revenue', value: '$67,895' },
-  { icon: 'fa-percent', title: 'Growth', value: '+24.5%' },
-];
-
-const lineChartData = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-  datasets: [
-    {
-      label: 'Revenue',
-      data: [10000, 15000, 8000, 20000, 30000, 25000],
-      borderColor: '#4a00e0',
-      backgroundColor: 'rgba(74, 0, 224, 0.2)',
-      tension: 0.4,
-    },
-  ],
-};
-
-const barChartData = {
-  labels: ['Product A', 'Product B', 'Product C', 'Product D'],
-  datasets: [
-    {
-      label: 'Sales',
-      data: [5000, 10000, 7000, 15000],
-      backgroundColor: '#8e2de2',
-    },
-  ],
-};
+import { fetchData } from './utils/fetchData';
 
 export default function DashboardPage() {
+  const [statsData, setStatsData] = useState([]);
+  const [chartData, setChartData] = useState(null);
+
+  useEffect(() => {
+    async function loadData() {
+      const stats = await fetchData('https://jsonplaceholder.typicode.com/posts'); // Replace with your API URL
+      setStatsData([
+        { icon: 'fa-users', title: 'Total Users', value: stats.length },
+        { icon: 'fa-shopping-bag', title: 'Total Sales', value: `$${(stats.length * 500).toLocaleString()}` },
+        { icon: 'fa-chart-line', title: 'Revenue', value: `$${(stats.length * 300).toLocaleString()}` },
+        { icon: 'fa-percent', title: 'Growth', value: '+24.5%' },
+      ]);
+
+      // Example chart data
+      setChartData({
+        labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+        datasets: [
+          {
+            label: 'Revenue',
+            data: stats.slice(0, 6).map((_, index) => (index + 1) * 10000),
+            borderColor: '#4a00e0',
+            backgroundColor: 'rgba(74, 0, 224, 0.2)',
+            tension: 0.4,
+          },
+        ],
+      });
+    }
+
+    loadData();
+  }, []);
+
   return (
     <div className="p-6 bg-background text-textPrimary">
       <h1 className="text-3xl font-bold mb-6">Dashboard Overview</h1>
@@ -52,8 +56,7 @@ export default function DashboardPage() {
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ChartCard title="Revenue Over Time" chartData={lineChartData} chartType="line" />
-        <ChartCard title="Product Sales" chartData={barChartData} chartType="bar" />
+        {chartData && <ChartCard title="Revenue Over Time" chartData={chartData} chartType="line" />}
       </div>
     </div>
   );
