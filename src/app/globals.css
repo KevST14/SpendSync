@@ -3,19 +3,74 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f0f1e;
+  --foreground: #ffffff;
+  --primary-color: #4a00e0;
+  --secondary-color: #8e2de2;
+  --accent-color: #00fff0;
+  --surface-color: #1a1a2e;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --success-color: #00ff9d;
+  --warning-color: #ffd700;
+  --danger-color: #ff4757;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #171717;
   }
 }
 
 body {
+  color: var(--text-primary);
+  background-color: var(--background);
+  font-family: 'Poppins', Arial, Helvetica, sans-serif;
+}
+
+/* Custom Utility Classes */
+.bg-background {
+  background-color: var(--background);
+}
+
+.text-foreground {
   color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+.bg-primary {
+  background-color: var(--primary-color);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.bg-surface {
+  background-color: var(--surface-color);
+}
+
+.text-accent {
+  color: var(--accent-color);
+}
+
+/* Custom Animations */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 255, 240, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 255, 240, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 255, 240, 0);
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
 }
