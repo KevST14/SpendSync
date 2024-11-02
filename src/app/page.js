@@ -3,7 +3,7 @@
 
 import dynamic from 'next/dynamic';
 import Sidebar from './components/Sidebar';
-import { FaPiggyBank, FaChartPie, FaFileInvoiceDollar, FaCalendarAlt, FaRedo } from 'react-icons/fa';
+import { FaPiggyBank, FaChartPie, FaFileInvoiceDollar, FaCalendarAlt, FaRedo, FaShoppingCart, FaBolt, FaMoneyBillWave } from 'react-icons/fa';
 
 const LineChart = dynamic(() => import('./components/LineChart'), { ssr: false });
 const BarChart = dynamic(() => import('./components/BarChart'), { ssr: false });
@@ -75,32 +75,56 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Recent Transactions Section */}
         <h2 className="text-xl font-bold mb-4">Recent Transactions</h2>
         <div className="bg-surface p-6 rounded-lg shadow-md">
-          <table className="w-full text-left">
-            <thead>
+          <div className="flex justify-between items-center mb-4">
+            <select className="bg-background text-secondary p-2 rounded">
+              <option value="date">Sort by Date</option>
+              <option value="category">Sort by Category</option>
+            </select>
+          </div>
+          
+          <table className="w-full text-left rounded-lg overflow-hidden">
+            <thead className="bg-primary text-text-primary">
               <tr>
-                <th className="p-2 border-b border-secondary">Date</th>
-                <th className="p-2 border-b border-secondary">Category</th>
-                <th className="p-2 border-b border-secondary">Amount</th>
-                <th className="p-2 border-b border-secondary">Notes</th>
+                <th className="p-3">Date</th>
+                <th className="p-3">Category</th>
+                <th className="p-3">Amount</th>
+                <th className="p-3">Notes</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td className="p-2 border-b border-secondary">01/06/2024</td>
-                <td className="p-2 border-b border-secondary">Groceries</td>
-                <td className="p-2 border-b border-secondary">$150</td>
-                <td className="p-2 border-b border-secondary">Weekly shopping</td>
+            <tbody className="bg-surface">
+              <tr className="hover:bg-background transition-colors">
+                <td className="p-3 flex items-center">
+                  <FaCalendarAlt className="mr-2 text-secondary" /> 01/06/2024
+                </td>
+                <td className="p-3 flex items-center">
+                  <FaShoppingCart className="mr-2 text-secondary" /> Groceries
+                </td>
+                <td className="p-3 text-danger font-semibold">- $150</td>
+                <td className="p-3">Weekly shopping</td>
               </tr>
-              <tr>
-                <td className="p-2 border-b border-secondary">02/06/2024</td>
-                <td className="p-2 border-b border-secondary">Utilities</td>
-                <td className="p-2 border-b border-secondary">$80</td>
-                <td className="p-2 border-b border-secondary">Electricity bill</td>
+              <tr className="hover:bg-background transition-colors">
+                <td className="p-3 flex items-center">
+                  <FaCalendarAlt className="mr-2 text-secondary" /> 02/06/2024
+                </td>
+                <td className="p-3 flex items-center">
+                  <FaBolt className="mr-2 text-secondary" /> Utilities
+                </td>
+                <td className="p-3 text-danger font-semibold">- $80</td>
+                <td className="p-3">Electricity bill</td>
               </tr>
-              {/* Add more transactions here */}
+              <tr className="hover:bg-background transition-colors">
+                <td className="p-3 flex items-center">
+                  <FaCalendarAlt className="mr-2 text-secondary" /> 03/06/2024
+                </td>
+                <td className="p-3 flex items-center">
+                  <FaMoneyBillWave className="mr-2 text-secondary" /> Income
+                </td>
+                <td className="p-3 text-success font-semibold">+ $500</td>
+                <td className="p-3">Freelance payment</td>
+              </tr>
+              {/* Additional transactions here */}
             </tbody>
           </table>
         </div>

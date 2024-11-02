@@ -243,3 +243,32 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Dropdown and Table Enhancements */
+select {
+  cursor: pointer;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+thead tr {
+  background-color: var(--primary-color);
+  color: var(--text-primary);
+}
+
+th, td {
+  padding: 1rem;
+}
+
+td {
+  color: var(--text-secondary);
+}
+
+tr:hover {
+  background-color: var(--background);
+  transition: background-color 0.3s;
+}
