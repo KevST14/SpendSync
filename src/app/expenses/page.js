@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import AddExpenseModal from '../components/AddExpenseModal';
 import { FaPlus, FaSearch, FaFilter, FaChartPie } from 'react-icons/fa';
 
 const PieChart = dynamic(() => import('../components/PieChart'), { ssr: false });
@@ -13,10 +14,11 @@ export default function ExpensesPage() {
 
   const [expenses, setExpenses] = useState([]);
   const [filteredExpenses, setFilteredExpenses] = useState([]);
+  const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Fetch expenses from the API
   useEffect(() => {
-    // Fetching expenses from an API
     async function fetchExpenses() {
       const response = await fetch('/api/expenses'); // Replace with your actual API endpoint
       const data = await response.json();
@@ -41,8 +43,21 @@ export default function ExpensesPage() {
     }
   };
 
+  // Add new expense to the list with a POST request
+  const addExpense = async (newExpense) => {
+    const response = await fetch('/api/expenses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newExpense),
+    });
+    const result = await response.json();
+    setExpenses([...expenses, result.expense]);
+    setFilteredExpenses([...filteredExpenses, result.expense]);
+  };
+
   return (
     <div className="expenses-page p-6">
+      
       {/* Page Header */}
       <header className="header mb-6 p-4 bg-surface rounded-lg shadow-lg flex justify-between items-center">
         <h1 className="text-2xl font-bold">Expenses</h1>
@@ -121,6 +136,14 @@ export default function ExpensesPage() {
           </table>
         </div>
       </section>
+
+      {/* Add Expense Modal */}
+      {showModal && (
+        <AddExpenseModal
+          onClose={() => setShowModal(false)}
+          onSave={addExpense}
+        />
+      )}
     </div>
   );
 }
