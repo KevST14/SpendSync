@@ -272,3 +272,50 @@ tr:hover {
   background-color: var(--background);
   transition: background-color 0.3s;
 }
+
+/* global.css */
+
+/* Basic styling for cards and table */
+.bg-surface {
+  background-color: var(--surface-color);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-danger {
+  color: var(--danger-color);
+}
+
+.expenses-page .overview div,
+.expenses-page .chart-section,
+.expenses-page .expense-list {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"] {
+  padding: 0.5rem;
+  color: var(--text-primary);
+  background-color: var(--background);
+  border: 1px solid var(--primary-color);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+thead tr {
+  background-color: var(--primary-color);
+  color: var(--text-primary);
+}
+
+th, td {
+  padding: 1rem;
+}
+
+tr:hover {
+  background-color: var(--background);
+  transition: background-color 0.3s;
+}
