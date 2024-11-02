@@ -1,7 +1,7 @@
 // src/app/expenses/page.js
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { FaPlus, FaSearch, FaFilter, FaChartPie } from 'react-icons/fa';
 
@@ -10,19 +10,46 @@ const PieChart = dynamic(() => import('../components/PieChart'), { ssr: false })
 export default function ExpensesPage() {
   const categories = ["Groceries", "Utilities", "Entertainment", "Transport", "Healthcare"];
   const categoryExpenses = [300, 150, 200, 100, 250];
-  
-  const [expenses, setExpenses] = useState([
-    { date: "01/06/2024", category: "Groceries", amount: 150, notes: "Weekly shopping" },
-    { date: "02/06/2024", category: "Utilities", amount: 80, notes: "Electricity bill" },
-    { date: "03/06/2024", category: "Entertainment", amount: 50, notes: "Movie night" },
-  ]);
+
+  const [expenses, setExpenses] = useState([]);
+  const [filteredExpenses, setFilteredExpenses] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    // Fetching expenses from an API
+    async function fetchExpenses() {
+      const response = await fetch('/api/expenses'); // Replace with your actual API endpoint
+      const data = await response.json();
+      setExpenses(data);
+      setFilteredExpenses(data);
+    }
+    fetchExpenses();
+  }, []);
+
+  // Filter expenses by search term
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    if (e.target.value === "") {
+      setFilteredExpenses(expenses);
+    } else {
+      setFilteredExpenses(
+        expenses.filter(expense => 
+          expense.category.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          expense.notes.toLowerCase().includes(e.target.value.toLowerCase())
+        )
+      );
+    }
+  };
 
   return (
     <div className="expenses-page p-6">
       {/* Page Header */}
       <header className="header mb-6 p-4 bg-surface rounded-lg shadow-lg flex justify-between items-center">
         <h1 className="text-2xl font-bold">Expenses</h1>
-        <button className="bg-primary text-text-primary p-3 rounded-lg flex items-center">
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-primary text-text-primary p-3 rounded-lg flex items-center"
+        >
           <FaPlus className="mr-2" /> Add New Expense
         </button>
       </header>
@@ -61,6 +88,8 @@ export default function ExpensesPage() {
             type="text"
             placeholder="Search expenses..."
             className="bg-background p-2 rounded-lg text-text-primary"
+            value={searchTerm}
+            onChange={handleSearch}
           />
           <FaSearch className="text-secondary ml-2" />
         </div>
@@ -80,7 +109,7 @@ export default function ExpensesPage() {
               </tr>
             </thead>
             <tbody>
-              {expenses.map((expense, index) => (
+              {filteredExpenses.map((expense, index) => (
                 <tr key={index} className="hover:bg-background transition-colors">
                   <td className="p-3">{expense.date}</td>
                   <td className="p-3">{expense.category}</td>
