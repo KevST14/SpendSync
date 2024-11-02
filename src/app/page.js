@@ -3,7 +3,7 @@
 
 import dynamic from 'next/dynamic';
 import Sidebar from './components/Sidebar';
-import { FaPiggyBank, FaChartPie, FaFileInvoiceDollar, FaCalendarAlt } from 'react-icons/fa';
+import { FaPiggyBank, FaChartPie, FaFileInvoiceDollar, FaCalendarAlt, FaRedo } from 'react-icons/fa';
 
 const LineChart = dynamic(() => import('./components/LineChart'), { ssr: false });
 const BarChart = dynamic(() => import('./components/BarChart'), { ssr: false });
@@ -18,7 +18,7 @@ export default function DashboardPage() {
       <Sidebar />
       <main className="main-content flex-1 p-6">
         <header className="header mb-6 p-4 bg-surface rounded-lg shadow-lg flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Personal Finance Tracker</h1>
+          <h1 className="text-2xl font-bold">Personal Finance Dashboard</h1>
           <div className="user-info flex items-center">
             <img src="https://via.placeholder.com/40" alt="User Avatar" className="avatar rounded-full mr-3" />
             <span>John Doe</span>
@@ -27,7 +27,7 @@ export default function DashboardPage() {
 
         {/* Dashboard Overview */}
         <h2 className="text-xl font-bold mb-4">Dashboard Overview</h2>
-        <div className="stats-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="stats-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           <div className="stat-card bg-surface p-6 rounded-lg shadow-md glow pulse">
             <FaPiggyBank className="text-2xl text-accent mb-2" />
             <h3>Total Savings</h3>
@@ -45,8 +45,13 @@ export default function DashboardPage() {
           </div>
           <div className="stat-card bg-surface p-6 rounded-lg shadow-md glow pulse">
             <FaCalendarAlt className="text-2xl text-accent mb-2" />
-            <h3>Budget Utilisation</h3>
+            <h3>Budget Utilization</h3>
             <p className="text-3xl font-bold">75%</p>
+          </div>
+          <div className="stat-card bg-surface p-6 rounded-lg shadow-md glow pulse">
+            <FaRedo className="text-2xl text-accent mb-2" />
+            <h3>Recurring Bills</h3>
+            <p className="text-3xl font-bold">$650</p>
           </div>
         </div>
 
