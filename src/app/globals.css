@@ -77,46 +77,21 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--danger-color);
 }
 
-/* Card Styles */
-.card {
-  background-color: var(--surface-color);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* Main Dashboard Layout */
+.dashboard {
+  display: flex;
+  min-height: 100vh;
 }
 
-.card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
-}
-
-.stat-card {
-  background-color: var(--surface-color);
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-.chart-card {
-  background-color: var(--surface-color);
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Sidebar Layout Enforcement */
+/* Sidebar Styling */
 .sidebar {
   width: 16rem;
   background-color: var(--surface-color);
   padding: 1.5rem;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  bottom: 0;
 }
 
 .sidebar-header {
@@ -129,11 +104,6 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--primary-color);
   font-size: 1.75rem;
   font-weight: bold;
-}
-
-.sidebar-header p {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
 }
 
 .nav-links {
@@ -162,6 +132,13 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
 }
 
+/* Main Content Styling */
+.main-content {
+  margin-left: 16rem; /* Ensures content does not overlap sidebar */
+  flex: 1;
+  padding: 20px;
+}
+
 /* Header and User Info */
 .header {
   display: flex;
@@ -171,31 +148,7 @@ h1, h2, h3, h4, h5, h6 {
   background-color: var(--surface-color);
   border-radius: 0.5rem;
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
-}
-
-.header .search-bar {
-  position: relative;
-}
-
-.header .search-bar input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  background-color: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--text-primary);
-}
-
-.header .search-bar input::placeholder {
-  color: var(--text-secondary);
-}
-
-.header .search-bar i {
-  position: absolute;
-  top: 50%;
-  right: 1rem;
-  transform: translateY(-50%);
-  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
 }
 
 .header .user-info {
@@ -210,7 +163,32 @@ h1, h2, h3, h4, h5, h6 {
   margin-right: 0.75rem;
 }
 
-/* Animations */
+/* Card Styles */
+.stat-card, .chart-card {
+  background-color: var(--surface-color);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+/* Glowing Effect on Cards */
+.stat-card.glow, .chart-card.glow {
+  box-shadow: 0 0 20px rgba(74, 0, 224, 0.3);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.stat-card.glow:hover, .chart-card.glow:hover {
+  box-shadow: 0 0 25px rgba(74, 0, 224, 0.5);
+  transform: scale(1.05);
+}
+
+/* Pulsating Animation */
+.pulse {
+  animation: pulse 2s infinite;
+}
+
 @keyframes pulse {
   0% {
     box-shadow: 0 0 0 0 rgba(0, 255, 240, 0.4);
@@ -223,6 +201,45 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-.pulse {
-  animation: pulse 2s infinite;
+/* Overview Stats Grid */
+.stats-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  margin-bottom: 2rem;
+}
+
+/* global.css */
+
+/* Chart Card Specific Styling */
+.chart-card {
+  background-color: var(--surface-color);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.chart-card.glow {
+  box-shadow: 0 0 20px rgba(74, 0, 224, 0.3);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.chart-card.glow:hover {
+  box-shadow: 0 0 25px rgba(74, 0, 224, 0.5);
+  transform: scale(1.05);
+}
+
+/* Responsive Grid for Charts */
+.charts-container {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .charts-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
