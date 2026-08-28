@@ -15,6 +15,7 @@ import {
   type ChartOptions,
 } from "chart.js";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
+import type { ChartProps } from "./Chart";
 
 ChartJS.register(
   ArcElement,
@@ -32,8 +33,6 @@ const GRID = "rgba(255, 255, 255, 0.08)";
 const TICK = "#b3b3b3";
 const SURFACE = "#1a1a2e";
 const DEFAULT_PALETTE = ["#4a00e0", "#8e2de2", "#00fff0", "#ffd700", "#ff4757"];
-
-import type { ChartProps } from "./Chart";
 
 function hexToRgba(hex: string, alpha: number): string {
   const n = parseInt(hex.replace("#", ""), 16);
@@ -57,10 +56,13 @@ export default function ChartCanvas({
   values,
   seriesLabel = "",
   color = "#00fff0",
+  series2,
   palette = DEFAULT_PALETTE,
   height = 260,
 }: ChartProps) {
   const wrap = (node: ReactNode) => <div style={{ height }}>{node}</div>;
+  const showLegend = Boolean(series2);
+  const legend = { display: showLegend, labels: { color: TICK } } as const;
 
   if (kind === "doughnut") {
     const options: ChartOptions<"doughnut"> = {
@@ -91,23 +93,27 @@ export default function ChartCanvas({
     const options: ChartOptions<"bar"> = {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: { legend },
       scales: moneyAxes,
     };
+    const bar = (label: string, data: number[], c: string) => ({
+      label,
+      data,
+      backgroundColor: hexToRgba(c, 0.7),
+      borderColor: c,
+      borderWidth: 1,
+      borderRadius: 4,
+    });
     return wrap(
       <Bar
         options={options}
         data={{
           labels,
           datasets: [
-            {
-              label: seriesLabel,
-              data: values,
-              backgroundColor: hexToRgba(color, 0.7),
-              borderColor: color,
-              borderWidth: 1,
-              borderRadius: 4,
-            },
+            bar(seriesLabel, values, color),
+            ...(series2
+              ? [bar(series2.label, series2.values, series2.color ?? "#ff4757")]
+              : []),
           ],
         }}
       />,
@@ -117,24 +123,28 @@ export default function ChartCanvas({
   const options: ChartOptions<"line"> = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
+    plugins: { legend },
     scales: moneyAxes,
   };
+  const line = (label: string, data: number[], c: string, fill: boolean) => ({
+    label,
+    data,
+    borderColor: c,
+    backgroundColor: hexToRgba(c, 0.12),
+    fill,
+    tension: 0.4,
+    pointRadius: 2,
+  });
   return wrap(
     <Line
       options={options}
       data={{
         labels,
         datasets: [
-          {
-            label: seriesLabel,
-            data: values,
-            borderColor: color,
-            backgroundColor: hexToRgba(color, 0.12),
-            fill: true,
-            tension: 0.4,
-            pointRadius: 2,
-          },
+          line(seriesLabel, values, color, !series2),
+          ...(series2
+            ? [line(series2.label, series2.values, series2.color ?? "#ff4757", false)]
+            : []),
         ],
       }}
     />,

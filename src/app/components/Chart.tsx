@@ -4,14 +4,22 @@ import dynamic from "next/dynamic";
 
 export type ChartKind = "line" | "bar" | "doughnut";
 
+export interface ChartSeries {
+  label: string;
+  values: number[];
+  color?: string;
+}
+
 export interface ChartProps {
   kind: ChartKind;
   labels: string[];
   values: number[];
-  /** Dataset label, shown in tooltips. */
+  /** Dataset label, shown in tooltips (and the legend when `series2` is set). */
   seriesLabel?: string;
   /** Accent colour for line / bar charts. */
   color?: string;
+  /** Optional second series for line / bar charts; adds a legend. */
+  series2?: ChartSeries;
   /** Slice colours for doughnut charts. */
   palette?: string[];
   height?: number;

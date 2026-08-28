@@ -1,27 +1,51 @@
 import {
-  FaPiggyBank,
-  FaChartPie,
-  FaPoundSign,
+  FaArrowUp,
+  FaArrowDown,
+  FaBalanceScale,
+  FaReceipt,
   FaCalendarAlt,
-  FaRedo,
-  FaShoppingCart,
-  FaBolt,
-  FaMoneyBillWave,
 } from "react-icons/fa";
 import Chart from "@/app/components/Chart";
+import { listExpenses } from "@/lib/expenses";
+import { computeStats } from "@/lib/stats";
 import { formatGBP } from "@/lib/format";
 
-const months = ["Jan", "Feb", "Mar", "Apr", "May"];
+export const dynamic = "force-dynamic";
 
-export default function DashboardPage() {
-  const categories = [
-    "Groceries",
-    "Utilities",
-    "Entertainment",
-    "Transport",
-    "Healthcare",
+export default async function DashboardPage() {
+  const expenses = await listExpenses();
+  const stats = computeStats(expenses);
+
+  const monthLabels = stats.monthly.map((m) => m.month);
+  const incomeSeries = stats.monthly.map((m) => m.income);
+  const expenseSeries = stats.monthly.map((m) => m.expense);
+
+  const cards = [
+    {
+      label: "Total Income",
+      value: formatGBP(stats.totalIncome),
+      color: "text-success",
+      Icon: FaArrowUp,
+    },
+    {
+      label: "Total Expenses",
+      value: formatGBP(stats.totalExpense),
+      color: "text-danger",
+      Icon: FaArrowDown,
+    },
+    {
+      label: "Net Balance",
+      value: formatGBP(stats.net),
+      color: stats.net >= 0 ? "text-success" : "text-danger",
+      Icon: FaBalanceScale,
+    },
+    {
+      label: "Transactions",
+      value: String(stats.transactionCount),
+      color: "text-accent",
+      Icon: FaReceipt,
+    },
   ];
-  const categoryExpenses = [300, 150, 200, 100, 250];
 
   return (
     <div className="space-y-8">
@@ -35,45 +59,48 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Dashboard Overview */}
       <h2 className="mb-4 text-xl font-bold">Dashboard Overview</h2>
-      <div className="stats-grid mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5">
-        <div className="stat-card glow pulse rounded-lg bg-surface p-6 shadow-md">
-          <FaPiggyBank className="mb-2 text-2xl text-accent" />
-          <h3>Total Savings</h3>
-          <p className="text-3xl font-bold">{formatGBP(1500)}</p>
-        </div>
-        <div className="stat-card glow pulse rounded-lg bg-surface p-6 shadow-md">
-          <FaChartPie className="mb-2 text-2xl text-accent" />
-          <h3>Total Income</h3>
-          <p className="text-3xl font-bold">{formatGBP(4000)}</p>
-        </div>
-        <div className="stat-card glow pulse rounded-lg bg-surface p-6 shadow-md">
-          <FaPoundSign className="mb-2 text-2xl text-accent" />
-          <h3>Total Expenses</h3>
-          <p className="text-3xl font-bold">{formatGBP(2345)}</p>
-        </div>
-        <div className="stat-card glow pulse rounded-lg bg-surface p-6 shadow-md">
-          <FaCalendarAlt className="mb-2 text-2xl text-accent" />
-          <h3>Budget Utilization</h3>
-          <p className="text-3xl font-bold">75%</p>
-        </div>
-        <div className="stat-card glow pulse rounded-lg bg-surface p-6 shadow-md">
-          <FaRedo className="mb-2 text-2xl text-accent" />
-          <h3>Recurring Bills</h3>
-          <p className="text-3xl font-bold">{formatGBP(650)}</p>
-        </div>
+      <div className="stats-grid mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map(({ label, value, color, Icon }) => (
+          <div key={label} className="stat-card glow rounded-lg bg-surface p-6 shadow-md">
+            <Icon className="mb-2 text-2xl text-accent" />
+            <h3>{label}</h3>
+            <p className={`text-3xl font-bold ${color}`}>{value}</p>
+          </div>
+        ))}
       </div>
 
-      {/* Financial Charts Section */}
       <div className="charts-container mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
+          <h3 className="mb-3 text-secondary">Expenses by Category</h3>
+          {stats.byCategory.length ? (
+            <Chart
+              kind="doughnut"
+              labels={stats.byCategory.map((c) => c.label)}
+              values={stats.byCategory.map((c) => c.value)}
+            />
+          ) : (
+            <p className="text-secondary">No expense data yet.</p>
+          )}
+        </div>
+        <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
+          <h3 className="mb-3 text-secondary">Income vs. Expenses</h3>
+          <Chart
+            kind="bar"
+            labels={monthLabels}
+            values={incomeSeries}
+            seriesLabel="Income"
+            color="#00ff9d"
+            series2={{ label: "Expenses", values: expenseSeries, color: "#ff4757" }}
+          />
+        </div>
         <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
           <h3 className="mb-3 text-secondary">Income Over Time</h3>
           <Chart
             kind="line"
+            labels={monthLabels}
+            values={incomeSeries}
             seriesLabel="Income"
-            labels={months}
-            values={[4000, 4200, 3800, 4500, 4700]}
             color="#00ff9d"
           />
         </div>
@@ -81,37 +108,16 @@ export default function DashboardPage() {
           <h3 className="mb-3 text-secondary">Expenses Over Time</h3>
           <Chart
             kind="line"
+            labels={monthLabels}
+            values={expenseSeries}
             seriesLabel="Expenses"
-            labels={months}
-            values={[2000, 2400, 2200, 2100, 2300]}
             color="#ff4757"
-          />
-        </div>
-        <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
-          <h3 className="mb-3 text-secondary">Expense Breakdown by Category</h3>
-          <Chart kind="doughnut" labels={categories} values={categoryExpenses} />
-        </div>
-        <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
-          <h3 className="mb-3 text-secondary">Income vs. Expenses</h3>
-          <Chart
-            kind="bar"
-            seriesLabel="Income"
-            labels={months}
-            values={[4000, 4200, 3800, 4500, 4700]}
-            color="#4a00e0"
           />
         </div>
       </div>
 
       <h2 className="mb-4 text-xl font-bold">Recent Transactions</h2>
       <div className="rounded-lg bg-surface p-6 shadow-md">
-        <div className="mb-4 flex items-center justify-between">
-          <select className="rounded bg-background p-2 text-secondary">
-            <option value="date">Sort by Date</option>
-            <option value="category">Sort by Category</option>
-          </select>
-        </div>
-
         <div className="overflow-x-auto">
           <table className="w-full min-w-[32rem] overflow-hidden rounded-lg text-left">
             <thead className="bg-primary text-text-primary">
@@ -123,37 +129,30 @@ export default function DashboardPage() {
               </tr>
             </thead>
             <tbody className="bg-surface">
-              <tr className="transition-colors hover:bg-background">
-                <td className="flex items-center p-3">
-                  <FaCalendarAlt className="mr-2 text-secondary" /> 01/06/2024
-                </td>
-                <td className="flex items-center p-3">
-                  <FaShoppingCart className="mr-2 text-secondary" /> Groceries
-                </td>
-                <td className="p-3 font-semibold text-danger">- {formatGBP(150)}</td>
-                <td className="p-3">Weekly shopping</td>
-              </tr>
-              <tr className="transition-colors hover:bg-background">
-                <td className="flex items-center p-3">
-                  <FaCalendarAlt className="mr-2 text-secondary" /> 02/06/2024
-                </td>
-                <td className="flex items-center p-3">
-                  <FaBolt className="mr-2 text-secondary" /> Utilities
-                </td>
-                <td className="p-3 font-semibold text-danger">- {formatGBP(80)}</td>
-                <td className="p-3">Electricity bill</td>
-              </tr>
-              <tr className="transition-colors hover:bg-background">
-                <td className="flex items-center p-3">
-                  <FaCalendarAlt className="mr-2 text-secondary" /> 03/06/2024
-                </td>
-                <td className="flex items-center p-3">
-                  <FaMoneyBillWave className="mr-2 text-secondary" /> Income
-                </td>
-                <td className="p-3 font-semibold text-success">+ {formatGBP(500)}</td>
-                <td className="p-3">Freelance payment</td>
-              </tr>
-              {/* Additional transactions here */}
+              {stats.recent.length === 0 && (
+                <tr>
+                  <td className="p-3 text-center text-secondary" colSpan={4}>
+                    No transactions yet.
+                  </td>
+                </tr>
+              )}
+              {stats.recent.map((t) => (
+                <tr key={t.id} className="transition-colors hover:bg-background">
+                  <td className="flex items-center p-3">
+                    <FaCalendarAlt className="mr-2 text-secondary" /> {t.date}
+                  </td>
+                  <td className="p-3">{t.category}</td>
+                  <td
+                    className={`p-3 font-semibold ${
+                      t.type === "income" ? "text-success" : "text-danger"
+                    }`}
+                  >
+                    {t.type === "income" ? "+ " : "- "}
+                    {formatGBP(t.amount)}
+                  </td>
+                  <td className="p-3">{t.notes}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
