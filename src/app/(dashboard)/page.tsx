@@ -49,14 +49,10 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <header className="header flex items-center justify-between rounded-lg bg-surface p-4 shadow-lg">
-        <h1 className="text-2xl font-bold">Personal Finance Dashboard</h1>
-        <div className="user-info flex items-center gap-3">
-          <span className="avatar" aria-hidden="true">
-            JD
-          </span>
-          <span>John Doe</span>
-        </div>
+      <header className="header rounded-lg bg-surface p-6 shadow-md">
+        <h1 className="text-3xl font-semibold text-heading">
+          Personal Finance Dashboard
+        </h1>
       </header>
 
       <h2 className="mb-4 text-xl font-bold">Dashboard Overview</h2>

@@ -22,3 +22,10 @@ export const budgetSchema = z.object({
 });
 
 export type BudgetInput = z.infer<typeof budgetSchema>;
+
+/** Payload accepted when updating application settings. */
+export const settingsSchema = z.object({
+  displayName: z.string().trim().min(1, "displayName is required").max(60),
+});
+
+export type SettingsInput = z.infer<typeof settingsSchema>;

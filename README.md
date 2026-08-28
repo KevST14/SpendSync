@@ -9,7 +9,7 @@ category, and review recent activity. Built with the Next.js App Router.
 | ---------- | ---------------------------------------- |
 | Framework  | Next.js 15 (App Router), React 18        |
 | Language   | TypeScript (strict)                      |
-| Styling    | Tailwind CSS, dark theme                 |
+| Styling    | Tailwind CSS, CSS-variable tokens, light + dark |
 | Charts     | Chart.js (`react-chartjs-2`), code-split |
 | Database   | PostgreSQL via Prisma ORM                |
 | Validation | Zod (API request bodies)                 |
@@ -68,34 +68,41 @@ Open http://localhost:3000.
 ```
 src/
   app/
-    (dashboard)/        route group — shared sidebar + <main> shell
-      page.tsx          overview dashboard
+    (dashboard)/        route group — async layout: sidebar + topbar + <main>
+      page.tsx          overview dashboard (live aggregates)
       expenses/         expenses list + add/delete
-      income|budgets|settings/   placeholder pages
-    api/expenses/       REST handlers (GET/POST, PUT/DELETE by id)
-    components/         Sidebar, Chart (dynamic), PlaceholderPage
+      income/           income analytics (read-only)
+      budgets/          budget vs. actual per category
+      settings/         display name, theme, export / reset
+    api/                REST handlers (expenses, budgets, settings, demo/reset)
+    components/         Sidebar, Topbar, Chart (dynamic), Button, Theme*, …
   lib/
     prisma.ts           PrismaClient singleton
-    expenses.ts         data-access functions
+    expenses.ts | budgets.ts | settings.ts   data-access
+    stats.ts            pure aggregation helpers
     validation.ts       Zod schemas
     format.ts           GBP currency formatting
+    demo.ts             seed dataset + resetDemoData()
     types.ts            shared API/UI types
 prisma/
-  schema.prisma         Expense model
-  seed.ts               sample data
+  schema.prisma         Expense / Budget / Settings models
+  seed.ts               loads the demo dataset
 ```
 
 ## API
 
-| Method | Path                | Body                                        | Response                          |
-| ------ | ------------------- | ------------------------------------------- | --------------------------------- |
-| GET    | `/api/expenses`     | —                                           | `Expense[]`                       |
-| POST   | `/api/expenses`     | `{ date, amount, category, notes?, type? }` | `{ expense }` (201)               |
-| PUT    | `/api/expenses/:id` | partial of the POST body                    | `{ expense }`                     |
-| DELETE | `/api/expenses/:id` | —                                           | 204                               |
-| GET    | `/api/budgets`      | —                                           | `Budget[]`                        |
-| PUT    | `/api/budgets`      | `{ category, monthlyLimit }`                | `{ budget }` (upsert by category) |
-| DELETE | `/api/budgets/:id`  | —                                           | 204                               |
+| Method | Path                | Body                                        | Response                           |
+| ------ | ------------------- | ------------------------------------------- | ---------------------------------- |
+| GET    | `/api/expenses`     | —                                           | `Expense[]`                        |
+| POST   | `/api/expenses`     | `{ date, amount, category, notes?, type? }` | `{ expense }` (201)                |
+| PUT    | `/api/expenses/:id` | partial of the POST body                    | `{ expense }`                      |
+| DELETE | `/api/expenses/:id` | —                                           | 204                                |
+| GET    | `/api/budgets`      | —                                           | `Budget[]`                         |
+| PUT    | `/api/budgets`      | `{ category, monthlyLimit }`                | `{ budget }` (upsert by category)  |
+| DELETE | `/api/budgets/:id`  | —                                           | 204                                |
+| GET    | `/api/settings`     | —                                           | `{ displayName }`                  |
+| PUT    | `/api/settings`     | `{ displayName }`                           | `{ settings }`                     |
+| POST   | `/api/demo/reset`   | —                                           | `{ ok: true }` (reloads demo data) |
 
 `date` is `yyyy-mm-dd`, `amount` / `monthlyLimit` are positive numbers in
 pounds, `type` is `"expense"` (default) or `"income"`. Invalid bodies
