@@ -9,7 +9,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-background text-textPrimary font-sans">
+      <body className="bg-background text-text-primary font-sans">
         <div>{children}</div> {/* This should avoid any recursive layout call */}
       </body>
     </html>
