@@ -5,6 +5,7 @@ import { FaPen, FaPlus, FaSort, FaSortDown, FaSortUp, FaTrash } from "react-icon
 import Button from "@/app/components/Button";
 import Chart from "@/app/components/Chart";
 import ExpenseForm from "@/app/components/ExpenseForm";
+import Skeleton from "@/app/components/Skeleton";
 import { useToast } from "@/app/components/Toast";
 import { formatGBP } from "@/lib/format";
 import { sumByCategory } from "@/lib/stats";
@@ -282,13 +283,16 @@ export default function ExpensesPage() {
               </tr>
             </thead>
             <tbody>
-              {status === "loading" && (
-                <tr>
-                  <td className="p-4 text-center text-muted" colSpan={5}>
-                    Loading…
-                  </td>
-                </tr>
-              )}
+              {status === "loading" &&
+                Array.from({ length: 6 }).map((_, i) => (
+                  <tr key={i} className="border-b border-border">
+                    {Array.from({ length: 5 }).map((__, j) => (
+                      <td key={j} className="p-3">
+                        <Skeleton className="h-4 w-full" />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
               {status === "error" && (
                 <tr>
                   <td className="p-4 text-center text-danger" colSpan={5}>

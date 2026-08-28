@@ -74,6 +74,47 @@ h6 {
   outline-offset: 2px;
 }
 
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.fade-up {
+  animation: fade-up 0.4s ease-out both;
+}
+
+.skeleton {
+  border-radius: 0.4rem;
+  background: linear-gradient(
+    90deg,
+    var(--color-elevated) 25%,
+    var(--color-border) 37%,
+    var(--color-elevated) 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-shine 1.4s ease infinite;
+}
+
+@keyframes skeleton-shine {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up {
+    animation: none;
+  }
+  .skeleton {
+    animation: none;
+  }
+}
+
 /* ---------------------------------------------------------------------------
    App shell
    --------------------------------------------------------------------------- */

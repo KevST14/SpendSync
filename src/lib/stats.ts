@@ -30,6 +30,42 @@ export interface DashboardStats {
   recent: Expense[];
 }
 
+export type DateRange = "month" | "3m" | "6m" | "year" | "all";
+
+export const DATE_RANGES: { value: DateRange; label: string }[] = [
+  { value: "month", label: "This month" },
+  { value: "3m", label: "3M" },
+  { value: "6m", label: "6M" },
+  { value: "year", label: "Year" },
+  { value: "all", label: "All" },
+];
+
+export function isDateRange(value: string | undefined): value is DateRange {
+  return DATE_RANGES.some((r) => r.value === value);
+}
+
+const pad = (n: number) => String(n).padStart(2, "0");
+const isoDate = (d: Date) =>
+  `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+/** Inclusive lower bound (yyyy-mm-dd) for a range, or null for "all". */
+export function rangeStart(range: DateRange, now = new Date()): string | null {
+  const y = now.getFullYear();
+  const m = now.getMonth();
+  switch (range) {
+    case "month":
+      return isoDate(new Date(y, m, 1));
+    case "3m":
+      return isoDate(new Date(y, m - 2, 1));
+    case "6m":
+      return isoDate(new Date(y, m - 5, 1));
+    case "year":
+      return isoDate(new Date(y, 0, 1));
+    case "all":
+      return null;
+  }
+}
+
 const monthLabel = new Intl.DateTimeFormat("en-GB", {
   month: "short",
   year: "2-digit",

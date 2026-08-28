@@ -6,14 +6,25 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 import Chart from "@/app/components/Chart";
+import Counter from "@/app/components/Counter";
+import DateRangeTabs from "@/app/components/DateRangeTabs";
 import { listExpenses } from "@/lib/expenses";
-import { computeStats } from "@/lib/stats";
+import { computeStats, isDateRange, rangeStart, type DateRange } from "@/lib/stats";
 import { formatGBP } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
-export default async function DashboardPage() {
-  const expenses = await listExpenses();
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ range?: string }>;
+}) {
+  const { range: rangeParam } = await searchParams;
+  const range: DateRange = isDateRange(rangeParam) ? rangeParam : "6m";
+
+  const all = await listExpenses();
+  const start = rangeStart(range);
+  const expenses = start ? all.filter((e) => e.date >= start) : all;
   const stats = computeStats(expenses);
 
   const monthLabels = stats.monthly.map((m) => m.month);
@@ -23,25 +34,29 @@ export default async function DashboardPage() {
   const cards = [
     {
       label: "Total Income",
-      value: formatGBP(stats.totalIncome),
+      amount: stats.totalIncome,
+      variant: "currency" as const,
       color: "text-success",
       Icon: FaArrowUp,
     },
     {
       label: "Total Expenses",
-      value: formatGBP(stats.totalExpense),
+      amount: stats.totalExpense,
+      variant: "currency" as const,
       color: "text-danger",
       Icon: FaArrowDown,
     },
     {
       label: "Net Balance",
-      value: formatGBP(stats.net),
+      amount: stats.net,
+      variant: "currency" as const,
       color: stats.net >= 0 ? "text-success" : "text-danger",
       Icon: FaBalanceScale,
     },
     {
       label: "Transactions",
-      value: String(stats.transactionCount),
+      amount: stats.transactionCount,
+      variant: "count" as const,
       color: "text-accent",
       Icon: FaReceipt,
     },
@@ -49,25 +64,34 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <header className="header rounded-lg bg-surface p-6 shadow-md">
+      <header className="header flex flex-wrap items-center justify-between gap-4 rounded-lg bg-surface p-6 shadow-md">
         <h1 className="text-3xl font-semibold text-heading">
           Personal Finance Dashboard
         </h1>
+        <DateRangeTabs current={range} />
       </header>
 
-      <h2 className="mb-4 text-xl font-bold">Dashboard Overview</h2>
-      <div className="stats-grid mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {cards.map(({ label, value, color, Icon }) => (
-          <div key={label} className="stat-card glow rounded-lg bg-surface p-6 shadow-md">
+      <div className="stats-grid grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map(({ label, amount, variant, color, Icon }, i) => (
+          <div
+            key={label}
+            className="stat-card glow fade-up rounded-lg bg-surface p-6"
+            style={{ animationDelay: `${i * 60}ms` }}
+          >
             <Icon className="mb-2 text-2xl text-accent" />
-            <h3>{label}</h3>
-            <p className={`text-3xl font-bold ${color}`}>{value}</p>
+            <h3 className="text-muted">{label}</h3>
+            <p className={`text-3xl font-bold ${color}`}>
+              <Counter value={amount} variant={variant} />
+            </p>
           </div>
         ))}
       </div>
 
-      <div className="charts-container mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
+      <div className="charts-container grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div
+          className="chart-card fade-up rounded-lg bg-surface p-6"
+          style={{ animationDelay: "80ms" }}
+        >
           <h3 className="mb-3 text-muted">Expenses by Category</h3>
           {stats.byCategory.length ? (
             <Chart
@@ -76,10 +100,13 @@ export default async function DashboardPage() {
               values={stats.byCategory.map((c) => c.value)}
             />
           ) : (
-            <p className="text-muted">No expense data yet.</p>
+            <p className="text-muted">No expenses in this range.</p>
           )}
         </div>
-        <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
+        <div
+          className="chart-card fade-up rounded-lg bg-surface p-6"
+          style={{ animationDelay: "140ms" }}
+        >
           <h3 className="mb-3 text-muted">Income vs. Expenses</h3>
           <Chart
             kind="bar"
@@ -90,7 +117,10 @@ export default async function DashboardPage() {
             series2={{ label: "Expenses", values: expenseSeries, color: "#ff5a68" }}
           />
         </div>
-        <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
+        <div
+          className="chart-card fade-up rounded-lg bg-surface p-6"
+          style={{ animationDelay: "200ms" }}
+        >
           <h3 className="mb-3 text-muted">Income Over Time</h3>
           <Chart
             kind="line"
@@ -100,7 +130,10 @@ export default async function DashboardPage() {
             color="#14e0a0"
           />
         </div>
-        <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
+        <div
+          className="chart-card fade-up rounded-lg bg-surface p-6"
+          style={{ animationDelay: "260ms" }}
+        >
           <h3 className="mb-3 text-muted">Expenses Over Time</h3>
           <Chart
             kind="line"
@@ -112,11 +145,11 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <h2 className="mb-4 text-xl font-bold">Recent Transactions</h2>
       <div className="rounded-lg bg-surface p-6 shadow-md">
+        <h2 className="mb-4 text-xl font-bold">Recent Transactions</h2>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[32rem] overflow-hidden rounded-lg text-left">
-            <thead className="bg-brand text-heading">
+            <thead className="bg-brand text-white">
               <tr>
                 <th className="p-3">Date</th>
                 <th className="p-3">Category</th>
@@ -124,16 +157,19 @@ export default async function DashboardPage() {
                 <th className="p-3">Notes</th>
               </tr>
             </thead>
-            <tbody className="bg-surface">
+            <tbody>
               {stats.recent.length === 0 && (
                 <tr>
                   <td className="p-3 text-center text-muted" colSpan={4}>
-                    No transactions yet.
+                    No transactions in this range.
                   </td>
                 </tr>
               )}
               {stats.recent.map((t) => (
-                <tr key={t.id} className="transition-colors hover:bg-elevated">
+                <tr
+                  key={t.id}
+                  className="border-b border-border transition-colors hover:bg-elevated"
+                >
                   <td className="flex items-center p-3">
                     <FaCalendarAlt className="mr-2 text-muted" /> {t.date}
                   </td>
@@ -146,7 +182,7 @@ export default async function DashboardPage() {
                     {t.type === "income" ? "+ " : "- "}
                     {formatGBP(t.amount)}
                   </td>
-                  <td className="p-3">{t.notes}</td>
+                  <td className="p-3 text-muted">{t.notes}</td>
                 </tr>
               ))}
             </tbody>
