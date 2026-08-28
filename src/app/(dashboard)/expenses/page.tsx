@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
 import { FaPlus, FaSearch, FaFilter, FaCheck, FaTimes } from "react-icons/fa";
+import Chart from "@/app/components/Chart";
+import { formatGBP } from "@/lib/format";
 import type { Expense, NewExpense } from "@/lib/types";
-
-const PieChart = dynamic(() => import("@/app/components/PieChart"), { ssr: false });
 
 const emptyForm: NewExpense = { date: "", category: "", amount: 0, notes: "" };
 
@@ -80,10 +79,10 @@ export default function ExpensesPage() {
       {/* Overview Cards */}
       <section className="overview grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-4">
         {[
-          { label: "Total Monthly Expenses", value: "$1,200", color: "text-danger" },
-          { label: "Average Daily Expense", value: "$40", color: "text-warning" },
-          { label: "Top Category", value: "Groceries: $300", color: "text-success" },
-          { label: "Recurring Expenses", value: "$450", color: "text-accent" },
+          { label: "Total Monthly Expenses", value: "£1,200", color: "text-danger" },
+          { label: "Average Daily Expense", value: "£40", color: "text-warning" },
+          { label: "Top Category", value: "Groceries: £300", color: "text-success" },
+          { label: "Recurring Expenses", value: "£450", color: "text-accent" },
         ].map(({ label, value, color }) => (
           <div
             key={label}
@@ -98,8 +97,8 @@ export default function ExpensesPage() {
       {/* Expense By Category Chart Card */}
       <section className="chart-section mb-8 rounded-lg bg-surface p-6 shadow-md">
         <h2 className="mb-4 text-2xl font-semibold text-primary">Expenses by Category</h2>
-        <div className="flex justify-center">
-          <PieChart categories={categories} dataValues={categoryExpenses} />
+        <div className="mx-auto max-w-md">
+          <Chart kind="doughnut" labels={categories} values={categoryExpenses} />
         </div>
       </section>
 
@@ -154,7 +153,7 @@ export default function ExpensesPage() {
                     <td className="border-b border-secondary p-3">{expense.date}</td>
                     <td className="border-b border-secondary p-3">{expense.category}</td>
                     <td className="border-b border-secondary p-3 font-semibold text-danger">
-                      - ${expense.amount}
+                      - {formatGBP(expense.amount)}
                     </td>
                     <td className="border-b border-secondary p-3">{expense.notes}</td>
                   </tr>

@@ -1,20 +1,17 @@
-"use client";
-
-import dynamic from "next/dynamic";
 import {
   FaPiggyBank,
   FaChartPie,
-  FaFileInvoiceDollar,
+  FaPoundSign,
   FaCalendarAlt,
   FaRedo,
   FaShoppingCart,
   FaBolt,
   FaMoneyBillWave,
 } from "react-icons/fa";
+import Chart from "@/app/components/Chart";
+import { formatGBP } from "@/lib/format";
 
-const LineChart = dynamic(() => import("@/app/components/LineChart"), { ssr: false });
-const BarChart = dynamic(() => import("@/app/components/BarChart"), { ssr: false });
-const PieChart = dynamic(() => import("@/app/components/PieChart"), { ssr: false });
+const months = ["Jan", "Feb", "Mar", "Apr", "May"];
 
 export default function DashboardPage() {
   const categories = [
@@ -44,17 +41,17 @@ export default function DashboardPage() {
         <div className="stat-card glow pulse rounded-lg bg-surface p-6 shadow-md">
           <FaPiggyBank className="mb-2 text-2xl text-accent" />
           <h3>Total Savings</h3>
-          <p className="text-3xl font-bold">$1,500</p>
+          <p className="text-3xl font-bold">{formatGBP(1500)}</p>
         </div>
         <div className="stat-card glow pulse rounded-lg bg-surface p-6 shadow-md">
           <FaChartPie className="mb-2 text-2xl text-accent" />
           <h3>Total Income</h3>
-          <p className="text-3xl font-bold">$4,000</p>
+          <p className="text-3xl font-bold">{formatGBP(4000)}</p>
         </div>
         <div className="stat-card glow pulse rounded-lg bg-surface p-6 shadow-md">
-          <FaFileInvoiceDollar className="mb-2 text-2xl text-accent" />
+          <FaPoundSign className="mb-2 text-2xl text-accent" />
           <h3>Total Expenses</h3>
-          <p className="text-3xl font-bold">$2,345</p>
+          <p className="text-3xl font-bold">{formatGBP(2345)}</p>
         </div>
         <div className="stat-card glow pulse rounded-lg bg-surface p-6 shadow-md">
           <FaCalendarAlt className="mb-2 text-2xl text-accent" />
@@ -64,7 +61,7 @@ export default function DashboardPage() {
         <div className="stat-card glow pulse rounded-lg bg-surface p-6 shadow-md">
           <FaRedo className="mb-2 text-2xl text-accent" />
           <h3>Recurring Bills</h3>
-          <p className="text-3xl font-bold">$650</p>
+          <p className="text-3xl font-bold">{formatGBP(650)}</p>
         </div>
       </div>
 
@@ -72,32 +69,36 @@ export default function DashboardPage() {
       <div className="charts-container mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
           <h3 className="mb-3 text-secondary">Income Over Time</h3>
-          <LineChart
-            title="Income"
-            labels={["Jan", "Feb", "Mar", "Apr", "May"]}
-            dataValues={[4000, 4200, 3800, 4500, 4700]}
-            borderColor="#00ff9d"
+          <Chart
+            kind="line"
+            seriesLabel="Income"
+            labels={months}
+            values={[4000, 4200, 3800, 4500, 4700]}
+            color="#00ff9d"
           />
         </div>
         <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
           <h3 className="mb-3 text-secondary">Expenses Over Time</h3>
-          <LineChart
-            title="Expenses"
-            labels={["Jan", "Feb", "Mar", "Apr", "May"]}
-            dataValues={[2000, 2400, 2200, 2100, 2300]}
-            borderColor="#ff4757"
+          <Chart
+            kind="line"
+            seriesLabel="Expenses"
+            labels={months}
+            values={[2000, 2400, 2200, 2100, 2300]}
+            color="#ff4757"
           />
         </div>
         <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
           <h3 className="mb-3 text-secondary">Expense Breakdown by Category</h3>
-          <PieChart categories={categories} dataValues={categoryExpenses} />
+          <Chart kind="doughnut" labels={categories} values={categoryExpenses} />
         </div>
         <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
           <h3 className="mb-3 text-secondary">Income vs. Expenses</h3>
-          <BarChart
-            title="Income vs. Expenses"
-            categories={["Jan", "Feb", "Mar", "Apr", "May"]}
-            dataValues={[4000, 4200, 3800, 4500, 4700]}
+          <Chart
+            kind="bar"
+            seriesLabel="Income"
+            labels={months}
+            values={[4000, 4200, 3800, 4500, 4700]}
+            color="#4a00e0"
           />
         </div>
       </div>
@@ -111,49 +112,51 @@ export default function DashboardPage() {
           </select>
         </div>
 
-        <table className="w-full overflow-hidden rounded-lg text-left">
-          <thead className="bg-primary text-text-primary">
-            <tr>
-              <th className="p-3">Date</th>
-              <th className="p-3">Category</th>
-              <th className="p-3">Amount</th>
-              <th className="p-3">Notes</th>
-            </tr>
-          </thead>
-          <tbody className="bg-surface">
-            <tr className="transition-colors hover:bg-background">
-              <td className="flex items-center p-3">
-                <FaCalendarAlt className="mr-2 text-secondary" /> 01/06/2024
-              </td>
-              <td className="flex items-center p-3">
-                <FaShoppingCart className="mr-2 text-secondary" /> Groceries
-              </td>
-              <td className="p-3 font-semibold text-danger">- $150</td>
-              <td className="p-3">Weekly shopping</td>
-            </tr>
-            <tr className="transition-colors hover:bg-background">
-              <td className="flex items-center p-3">
-                <FaCalendarAlt className="mr-2 text-secondary" /> 02/06/2024
-              </td>
-              <td className="flex items-center p-3">
-                <FaBolt className="mr-2 text-secondary" /> Utilities
-              </td>
-              <td className="p-3 font-semibold text-danger">- $80</td>
-              <td className="p-3">Electricity bill</td>
-            </tr>
-            <tr className="transition-colors hover:bg-background">
-              <td className="flex items-center p-3">
-                <FaCalendarAlt className="mr-2 text-secondary" /> 03/06/2024
-              </td>
-              <td className="flex items-center p-3">
-                <FaMoneyBillWave className="mr-2 text-secondary" /> Income
-              </td>
-              <td className="p-3 font-semibold text-success">+ $500</td>
-              <td className="p-3">Freelance payment</td>
-            </tr>
-            {/* Additional transactions here */}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[32rem] overflow-hidden rounded-lg text-left">
+            <thead className="bg-primary text-text-primary">
+              <tr>
+                <th className="p-3">Date</th>
+                <th className="p-3">Category</th>
+                <th className="p-3">Amount</th>
+                <th className="p-3">Notes</th>
+              </tr>
+            </thead>
+            <tbody className="bg-surface">
+              <tr className="transition-colors hover:bg-background">
+                <td className="flex items-center p-3">
+                  <FaCalendarAlt className="mr-2 text-secondary" /> 01/06/2024
+                </td>
+                <td className="flex items-center p-3">
+                  <FaShoppingCart className="mr-2 text-secondary" /> Groceries
+                </td>
+                <td className="p-3 font-semibold text-danger">- {formatGBP(150)}</td>
+                <td className="p-3">Weekly shopping</td>
+              </tr>
+              <tr className="transition-colors hover:bg-background">
+                <td className="flex items-center p-3">
+                  <FaCalendarAlt className="mr-2 text-secondary" /> 02/06/2024
+                </td>
+                <td className="flex items-center p-3">
+                  <FaBolt className="mr-2 text-secondary" /> Utilities
+                </td>
+                <td className="p-3 font-semibold text-danger">- {formatGBP(80)}</td>
+                <td className="p-3">Electricity bill</td>
+              </tr>
+              <tr className="transition-colors hover:bg-background">
+                <td className="flex items-center p-3">
+                  <FaCalendarAlt className="mr-2 text-secondary" /> 03/06/2024
+                </td>
+                <td className="flex items-center p-3">
+                  <FaMoneyBillWave className="mr-2 text-secondary" /> Income
+                </td>
+                <td className="p-3 font-semibold text-success">+ {formatGBP(500)}</td>
+                <td className="p-3">Freelance payment</td>
+              </tr>
+              {/* Additional transactions here */}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
