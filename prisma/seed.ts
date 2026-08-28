@@ -225,12 +225,25 @@ const rows: Row[] = [
   },
 ];
 
+const budgets: Prisma.BudgetCreateManyInput[] = [
+  { category: "Groceries", monthlyLimit: 260 },
+  { category: "Utilities", monthlyLimit: 120 },
+  { category: "Dining", monthlyLimit: 80 },
+  { category: "Transport", monthlyLimit: 60 },
+];
+
 async function main() {
   await prisma.expense.deleteMany();
   await prisma.expense.createMany({
     data: rows.map((row) => ({ ...row, date: new Date(row.date) })),
   });
-  console.log(`Seeded ${rows.length} expenses across 4 months.`);
+
+  await prisma.budget.deleteMany();
+  await prisma.budget.createMany({ data: budgets });
+
+  console.log(
+    `Seeded ${rows.length} expenses across 4 months and ${budgets.length} budgets.`,
+  );
 }
 
 main()

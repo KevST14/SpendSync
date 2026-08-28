@@ -14,3 +14,11 @@ export const updateExpenseSchema = createExpenseSchema.partial();
 
 export type CreateExpenseInput = z.infer<typeof createExpenseSchema>;
 export type UpdateExpenseInput = z.infer<typeof updateExpenseSchema>;
+
+/** Payload accepted when setting a budget (upsert by category). */
+export const budgetSchema = z.object({
+  category: z.string().trim().min(1, "category is required").max(60),
+  monthlyLimit: z.coerce.number().positive("monthlyLimit must be greater than 0"),
+});
+
+export type BudgetInput = z.infer<typeof budgetSchema>;

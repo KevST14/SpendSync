@@ -18,3 +18,11 @@ export interface Expense {
 }
 
 export type NewExpense = Omit<Expense, "id">;
+
+export interface Budget {
+  id: string;
+  category: string;
+  monthlyLimit: number; // pounds
+}
+
+export type NewBudget = Omit<Budget, "id">;

@@ -27,3 +27,11 @@ model Expense {
   @@index([date])
   @@index([type])
 }
+
+model Budget {
+  id           String   @id @default(cuid())
+  category     String   @unique
+  monthlyLimit Decimal  @db.Decimal(10, 2)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

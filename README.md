@@ -87,13 +87,16 @@ prisma/
 
 ## API
 
-| Method | Path                | Body                                        | Response            |
-| ------ | ------------------- | ------------------------------------------- | ------------------- |
-| GET    | `/api/expenses`     | —                                           | `Expense[]`         |
-| POST   | `/api/expenses`     | `{ date, amount, category, notes?, type? }` | `{ expense }` (201) |
-| PUT    | `/api/expenses/:id` | partial of the POST body                    | `{ expense }`       |
-| DELETE | `/api/expenses/:id` | —                                           | 204                 |
+| Method | Path                | Body                                        | Response                          |
+| ------ | ------------------- | ------------------------------------------- | --------------------------------- |
+| GET    | `/api/expenses`     | —                                           | `Expense[]`                       |
+| POST   | `/api/expenses`     | `{ date, amount, category, notes?, type? }` | `{ expense }` (201)               |
+| PUT    | `/api/expenses/:id` | partial of the POST body                    | `{ expense }`                     |
+| DELETE | `/api/expenses/:id` | —                                           | 204                               |
+| GET    | `/api/budgets`      | —                                           | `Budget[]`                        |
+| PUT    | `/api/budgets`      | `{ category, monthlyLimit }`                | `{ budget }` (upsert by category) |
+| DELETE | `/api/budgets/:id`  | —                                           | 204                               |
 
-`date` is `yyyy-mm-dd`, `amount` is a positive number in pounds, `type` is
-`"expense"` (default) or `"income"`. Invalid bodies return `400` with a
-`issues` map from Zod.
+`date` is `yyyy-mm-dd`, `amount` / `monthlyLimit` are positive numbers in
+pounds, `type` is `"expense"` (default) or `"income"`. Invalid bodies
+return `400` with an `issues` map from Zod.
