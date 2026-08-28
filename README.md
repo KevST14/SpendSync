@@ -73,6 +73,7 @@ src/
       expenses/         expenses list + add/delete
       income/           income analytics (read-only)
       budgets/          budget vs. actual per category
+      goals/            savings goals with contributions
       recurring/        scheduled rules that post transactions
       settings/         display name, theme, export / reset
     api/                REST handlers (expenses, budgets, settings, demo/reset)
@@ -86,30 +87,35 @@ src/
     demo.ts             seed dataset + resetDemoData()
     types.ts            shared API/UI types
 prisma/
-  schema.prisma         Expense / Budget / Settings / RecurringRule models
+  schema.prisma         Expense / Budget / Settings / RecurringRule / SavingsGoal
   seed.ts               loads the demo dataset
 ```
 
 ## API
 
-| Method | Path                      | Body                                                        | Response                                   |
-| ------ | ------------------------- | ----------------------------------------------------------- | ------------------------------------------ |
-| GET    | `/api/expenses`           | —                                                           | `Expense[]`                                |
-| POST   | `/api/expenses`           | `{ date, amount, category, notes?, type? }`                 | `{ expense }` (201)                        |
-| PUT    | `/api/expenses/:id`       | partial of the POST body                                    | `{ expense }`                              |
-| DELETE | `/api/expenses/:id`       | —                                                           | 204                                        |
-| GET    | `/api/budgets`            | —                                                           | `Budget[]`                                 |
-| PUT    | `/api/budgets`            | `{ category, monthlyLimit }`                                | `{ budget }` (upsert by category)          |
-| DELETE | `/api/budgets/:id`        | —                                                           | 204                                        |
-| GET    | `/api/settings`           | —                                                           | `{ displayName }`                          |
-| PUT    | `/api/settings`           | `{ displayName }`                                           | `{ settings }`                             |
-| GET    | `/api/recurring`          | —                                                           | `RecurringRule[]`                          |
-| POST   | `/api/recurring`          | `{ category, amount, type?, frequency?, nextDate, notes? }` | `{ rule }` (201)                           |
-| PUT    | `/api/recurring/:id`      | partial of the POST body                                    | `{ rule }`                                 |
-| DELETE | `/api/recurring/:id`      | —                                                           | 204                                        |
-| POST   | `/api/recurring/:id/post` | —                                                           | `{ expense, rule }` (posts one occurrence) |
-| POST   | `/api/recurring/post-due` | —                                                           | `{ posted }` (posts everything due)        |
-| POST   | `/api/demo/reset`         | —                                                           | `{ ok: true }` (reloads demo data)         |
+| Method | Path                        | Body                                                        | Response                                   |
+| ------ | --------------------------- | ----------------------------------------------------------- | ------------------------------------------ |
+| GET    | `/api/expenses`             | —                                                           | `Expense[]`                                |
+| POST   | `/api/expenses`             | `{ date, amount, category, notes?, type? }`                 | `{ expense }` (201)                        |
+| PUT    | `/api/expenses/:id`         | partial of the POST body                                    | `{ expense }`                              |
+| DELETE | `/api/expenses/:id`         | —                                                           | 204                                        |
+| GET    | `/api/budgets`              | —                                                           | `Budget[]`                                 |
+| PUT    | `/api/budgets`              | `{ category, monthlyLimit }`                                | `{ budget }` (upsert by category)          |
+| DELETE | `/api/budgets/:id`          | —                                                           | 204                                        |
+| GET    | `/api/settings`             | —                                                           | `{ displayName }`                          |
+| PUT    | `/api/settings`             | `{ displayName }`                                           | `{ settings }`                             |
+| GET    | `/api/recurring`            | —                                                           | `RecurringRule[]`                          |
+| POST   | `/api/recurring`            | `{ category, amount, type?, frequency?, nextDate, notes? }` | `{ rule }` (201)                           |
+| PUT    | `/api/recurring/:id`        | partial of the POST body                                    | `{ rule }`                                 |
+| DELETE | `/api/recurring/:id`        | —                                                           | 204                                        |
+| POST   | `/api/recurring/:id/post`   | —                                                           | `{ expense, rule }` (posts one occurrence) |
+| POST   | `/api/recurring/post-due`   | —                                                           | `{ posted }` (posts everything due)        |
+| GET    | `/api/goals`                | —                                                           | `SavingsGoal[]`                            |
+| POST   | `/api/goals`                | `{ name, target, targetDate? }`                             | `{ goal }` (201)                           |
+| PUT    | `/api/goals/:id`            | partial of the POST body                                    | `{ goal }`                                 |
+| DELETE | `/api/goals/:id`            | —                                                           | 204                                        |
+| POST   | `/api/goals/:id/contribute` | `{ amount }`                                                | `{ goal }` (adds to `saved`)               |
+| POST   | `/api/demo/reset`           | —                                                           | `{ ok: true }` (reloads demo data)         |
 
 `date` is `yyyy-mm-dd`, `amount` / `monthlyLimit` are positive numbers in
 pounds, `type` is `"expense"` (default) or `"income"`. Invalid bodies

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import type { IconType } from "react-icons";
 import {
   FaBars,
+  FaBullseye,
   FaChartPie,
   FaCog,
   FaPiggyBank,
@@ -26,6 +27,7 @@ const navItems: NavItem[] = [
   { label: "Expenses", href: "/expenses", icon: FaWallet },
   { label: "Income", href: "/income", icon: FaPiggyBank },
   { label: "Budgets", href: "/budgets", icon: FaChartPie },
+  { label: "Goals", href: "/goals", icon: FaBullseye },
   { label: "Recurring", href: "/recurring", icon: FaSyncAlt },
   { label: "Settings", href: "/settings", icon: FaCog },
 ];

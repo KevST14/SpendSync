@@ -280,16 +280,34 @@ export const demoRecurring: DemoRecurring[] = [
   },
 ];
 
+export const demoGoals: {
+  name: string;
+  target: number;
+  saved: number;
+  targetDate: string | null;
+}[] = [
+  { name: "Emergency fund", target: 5000, saved: 2600, targetDate: "2026-12-31" },
+  { name: "Holiday", target: 1500, saved: 900, targetDate: "2027-04-01" },
+  { name: "New laptop", target: 1800, saved: 1800, targetDate: null },
+];
+
 /** Wipe demo tables and reinsert the demo dataset. */
 export async function resetDemoData(prisma: PrismaClient): Promise<void> {
   await prisma.expense.deleteMany();
   await prisma.budget.deleteMany();
   await prisma.recurringRule.deleteMany();
+  await prisma.savingsGoal.deleteMany();
   await prisma.expense.createMany({
     data: demoExpenses.map((row) => ({ ...row, date: new Date(row.date) })),
   });
   await prisma.budget.createMany({ data: demoBudgets });
   await prisma.recurringRule.createMany({
     data: demoRecurring.map((row) => ({ ...row, nextDate: new Date(row.nextDate) })),
+  });
+  await prisma.savingsGoal.createMany({
+    data: demoGoals.map((row) => ({
+      ...row,
+      targetDate: row.targetDate ? new Date(row.targetDate) : null,
+    })),
   });
 }

@@ -1,12 +1,19 @@
 import { PrismaClient } from "@prisma/client";
-import { demoBudgets, demoExpenses, demoRecurring, resetDemoData } from "../src/lib/demo";
+import {
+  demoBudgets,
+  demoExpenses,
+  demoGoals,
+  demoRecurring,
+  resetDemoData,
+} from "../src/lib/demo";
 
 const prisma = new PrismaClient();
 
 async function main() {
   await resetDemoData(prisma);
   console.log(
-    `Seeded ${demoExpenses.length} expenses, ${demoBudgets.length} budgets, ${demoRecurring.length} recurring rules.`,
+    `Seeded ${demoExpenses.length} expenses, ${demoBudgets.length} budgets, ` +
+      `${demoRecurring.length} recurring rules, ${demoGoals.length} goals.`,
   );
 }
 

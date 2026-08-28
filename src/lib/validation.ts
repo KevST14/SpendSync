@@ -44,3 +44,23 @@ export const updateRecurringSchema = recurringSchema.partial();
 
 export type RecurringInput = z.infer<typeof recurringSchema>;
 export type UpdateRecurringInput = z.infer<typeof updateRecurringSchema>;
+
+/** Payload accepted when creating a savings goal. */
+export const goalSchema = z.object({
+  name: z.string().trim().min(1, "name is required").max(80),
+  target: z.coerce.number().positive("target must be greater than 0"),
+  targetDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "targetDate must be yyyy-mm-dd")
+    .nullish()
+    .transform((v) => v ?? null),
+});
+
+export const updateGoalSchema = goalSchema.partial();
+
+export const contributeSchema = z.object({
+  amount: z.coerce.number().positive("amount must be greater than 0"),
+});
+
+export type GoalInput = z.infer<typeof goalSchema>;
+export type UpdateGoalInput = z.infer<typeof updateGoalSchema>;

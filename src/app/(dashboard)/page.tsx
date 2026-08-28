@@ -5,12 +5,14 @@ import {
   FaReceipt,
   FaCalendarAlt,
   FaSyncAlt,
+  FaBullseye,
 } from "react-icons/fa";
 import Chart from "@/app/components/Chart";
 import Counter from "@/app/components/Counter";
 import DateRangeTabs from "@/app/components/DateRangeTabs";
 import { listExpenses } from "@/lib/expenses";
 import { listRecurring } from "@/lib/recurring";
+import { listGoals } from "@/lib/goals";
 import { computeStats, isDateRange, rangeStart, type DateRange } from "@/lib/stats";
 import { formatGBP } from "@/lib/format";
 
@@ -24,11 +26,16 @@ export default async function DashboardPage({
   const { range: rangeParam } = await searchParams;
   const range: DateRange = isDateRange(rangeParam) ? rangeParam : "6m";
 
-  const [all, recurring] = await Promise.all([listExpenses(), listRecurring()]);
+  const [all, recurring, goals] = await Promise.all([
+    listExpenses(),
+    listRecurring(),
+    listGoals(),
+  ]);
   const start = rangeStart(range);
   const expenses = start ? all.filter((e) => e.date >= start) : all;
   const stats = computeStats(expenses);
   const upcoming = recurring.slice(0, 4);
+  const topGoals = goals.slice(0, 3);
 
   const monthLabels = stats.monthly.map((m) => m.month);
   const incomeSeries = stats.monthly.map((m) => m.income);
@@ -148,31 +155,66 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      {upcoming.length > 0 && (
-        <div className="rounded-lg bg-surface p-6 shadow-md">
-          <h2 className="mb-4 flex items-center gap-2 text-xl font-bold">
-            <FaSyncAlt className="text-accent" /> Upcoming
-          </h2>
-          <ul className="divide-y divide-border">
-            {upcoming.map((rule) => (
-              <li key={rule.id} className="flex items-center justify-between py-2.5">
-                <span>
-                  <span className="font-medium">{rule.category}</span>
-                  <span className="ml-2 text-sm text-muted">
-                    {rule.nextDate} · {rule.frequency}
-                  </span>
-                </span>
-                <span
-                  className={`font-semibold ${
-                    rule.type === "income" ? "text-success" : "text-danger"
-                  }`}
-                >
-                  {rule.type === "income" ? "+ " : "- "}
-                  {formatGBP(rule.amount)}
-                </span>
-              </li>
-            ))}
-          </ul>
+      {(upcoming.length > 0 || topGoals.length > 0) && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {upcoming.length > 0 && (
+            <div className="rounded-lg bg-surface p-6 shadow-md">
+              <h2 className="mb-4 flex items-center gap-2 text-xl font-bold">
+                <FaSyncAlt className="text-accent" /> Upcoming
+              </h2>
+              <ul className="divide-y divide-border">
+                {upcoming.map((rule) => (
+                  <li key={rule.id} className="flex items-center justify-between py-2.5">
+                    <span>
+                      <span className="font-medium">{rule.category}</span>
+                      <span className="ml-2 text-sm text-muted">
+                        {rule.nextDate} · {rule.frequency}
+                      </span>
+                    </span>
+                    <span
+                      className={`font-semibold ${
+                        rule.type === "income" ? "text-success" : "text-danger"
+                      }`}
+                    >
+                      {rule.type === "income" ? "+ " : "- "}
+                      {formatGBP(rule.amount)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {topGoals.length > 0 && (
+            <div className="rounded-lg bg-surface p-6 shadow-md">
+              <h2 className="mb-4 flex items-center gap-2 text-xl font-bold">
+                <FaBullseye className="text-accent" /> Savings goals
+              </h2>
+              <ul className="space-y-3">
+                {topGoals.map((goal) => {
+                  const pct = goal.target > 0 ? (goal.saved / goal.target) * 100 : 0;
+                  return (
+                    <li key={goal.id}>
+                      <div className="mb-1 flex items-center justify-between text-sm">
+                        <span className="font-medium">{goal.name}</span>
+                        <span className="text-muted">
+                          {formatGBP(goal.saved)} / {formatGBP(goal.target)}
+                        </span>
+                      </div>
+                      <div className="h-2 overflow-hidden rounded bg-elevated">
+                        <div
+                          className={`h-full rounded ${
+                            pct >= 100 ? "bg-success" : "bg-brand"
+                          }`}
+                          style={{ width: `${Math.min(100, pct)}%` }}
+                        />
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         </div>
       )}
 

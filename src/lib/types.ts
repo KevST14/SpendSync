@@ -40,3 +40,13 @@ export interface RecurringRule {
 }
 
 export type NewRecurringRule = Omit<RecurringRule, "id">;
+
+export interface SavingsGoal {
+  id: string;
+  name: string;
+  target: number; // pounds
+  saved: number; // pounds
+  targetDate: string | null; // yyyy-mm-dd
+}
+
+export type NewSavingsGoal = Omit<SavingsGoal, "id" | "saved">;

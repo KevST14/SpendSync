@@ -61,3 +61,13 @@ model RecurringRule {
 
   @@index([nextDate])
 }
+
+model SavingsGoal {
+  id         String    @id @default(cuid())
+  name       String
+  target     Decimal   @db.Decimal(10, 2)
+  saved      Decimal   @default(0) @db.Decimal(10, 2)
+  targetDate DateTime? @db.Date
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
