@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaCheck, FaPen, FaTrash } from "react-icons/fa";
 import Button from "./Button";
+import { useToast } from "./Toast";
 import { formatGBP } from "@/lib/format";
 import type { Budget } from "@/lib/types";
 
@@ -25,6 +26,7 @@ export default function BudgetManager({
   knownCategories,
 }: BudgetManagerProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const [category, setCategory] = useState("");
   const [limit, setLimit] = useState("");
   const [busy, setBusy] = useState(false);
@@ -46,7 +48,10 @@ export default function BudgetManager({
       if (res.ok) {
         setCategory("");
         setLimit("");
+        toast("Budget saved.");
         router.refresh();
+      } else {
+        toast("Could not save the budget.", "error");
       }
     } finally {
       setBusy(false);
@@ -55,7 +60,12 @@ export default function BudgetManager({
 
   const remove = async (id: string) => {
     const res = await fetch(`/api/budgets/${id}`, { method: "DELETE" });
-    if (res.ok) router.refresh();
+    if (res.ok) {
+      toast("Budget removed.");
+      router.refresh();
+    } else {
+      toast("Could not remove the budget.", "error");
+    }
   };
 
   const startEdit = (b: Budget) => {

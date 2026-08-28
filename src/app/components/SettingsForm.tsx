@@ -5,26 +5,30 @@ import { useRouter } from "next/navigation";
 import { FaDownload, FaTrashRestore } from "react-icons/fa";
 import Button from "./Button";
 import ThemeControl from "./ThemeControl";
+import { useToast } from "./Toast";
 import type { Expense } from "@/lib/types";
 
 export default function SettingsForm({ initialName }: { initialName: string }) {
   const router = useRouter();
+  const { toast } = useToast();
   const [name, setName] = useState(initialName);
   const [saving, setSaving] = useState(false);
   const [resetting, setResetting] = useState(false);
-  const [message, setMessage] = useState("");
 
   const saveName = async () => {
     setSaving(true);
-    setMessage("");
     try {
       const res = await fetch("/api/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ displayName: name.trim() }),
       });
-      setMessage(res.ok ? "Saved." : "Could not save.");
-      if (res.ok) router.refresh();
+      if (res.ok) {
+        toast("Profile saved.");
+        router.refresh();
+      } else {
+        toast("Could not save your profile.", "error");
+      }
     } finally {
       setSaving(false);
     }
@@ -46,6 +50,7 @@ export default function SettingsForm({ initialName }: { initialName: string }) {
     link.download = "spendsync-export.csv";
     link.click();
     URL.revokeObjectURL(url);
+    toast(`Exported ${rows.length} transactions.`);
   };
 
   const resetDemo = async () => {
@@ -53,7 +58,12 @@ export default function SettingsForm({ initialName }: { initialName: string }) {
     setResetting(true);
     try {
       const res = await fetch("/api/demo/reset", { method: "POST" });
-      if (res.ok) router.refresh();
+      if (res.ok) {
+        toast("Demo data restored.");
+        router.refresh();
+      } else {
+        toast("Could not reset demo data.", "error");
+      }
     } finally {
       setResetting(false);
     }
@@ -72,15 +82,12 @@ export default function SettingsForm({ initialName }: { initialName: string }) {
             className="rounded-lg bg-elevated p-3 text-heading focus:outline-none"
           />
         </label>
-        <div className="flex items-center gap-3">
-          <Button
-            onClick={saveName}
-            disabled={saving || !name.trim() || name.trim() === initialName}
-          >
-            {saving ? "Saving…" : "Save"}
-          </Button>
-          {message && <span className="text-sm text-muted">{message}</span>}
-        </div>
+        <Button
+          onClick={saveName}
+          disabled={saving || !name.trim() || name.trim() === initialName}
+        >
+          {saving ? "Saving…" : "Save"}
+        </Button>
       </section>
 
       <section className="space-y-4 rounded-lg bg-surface p-6 shadow-md">
