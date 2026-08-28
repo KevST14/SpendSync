@@ -1,22 +1,28 @@
 import { NextResponse } from "next/server";
-import type { Expense, NewExpense } from "@/lib/types";
-
-// Temporary in-memory store for expenses (replaced by Prisma + Postgres in Phase 4).
-const expenses: Expense[] = [
-  { date: "2024-06-01", category: "Groceries", amount: 150, notes: "Weekly shopping" },
-  { date: "2024-06-02", category: "Utilities", amount: 80, notes: "Electricity bill" },
-  { date: "2024-06-03", category: "Entertainment", amount: 50, notes: "Movie night" },
-];
+import { createExpense, listExpenses } from "@/lib/expenses";
+import { createExpenseSchema } from "@/lib/validation";
 
 export async function GET() {
+  const expenses = await listExpenses();
   return NextResponse.json(expenses);
 }
 
 export async function POST(request: Request) {
-  const newExpense = (await request.json()) as NewExpense;
-  expenses.push(newExpense);
-  return NextResponse.json({
-    message: "Expense added successfully",
-    expense: newExpense,
-  });
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const parsed = createExpenseSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Validation failed", issues: parsed.error.flatten().fieldErrors },
+      { status: 400 },
+    );
+  }
+
+  const expense = await createExpense(parsed.data);
+  return NextResponse.json({ expense }, { status: 201 });
 }

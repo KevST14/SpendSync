@@ -1,16 +1,20 @@
 /**
- * Shared domain types.
+ * Shared domain types — the shape the API and UI exchange.
  *
- * These mirror the current mock API shape. Phase 4 replaces the mock store
- * with Prisma + Postgres, at which point `Expense` gains `id` and `type`
- * fields and this file re-exports the generated Prisma types.
+ * These are the serialized form of the Prisma `Expense` row: `date` is a
+ * `yyyy-mm-dd` string and `amount` is a plain number (pounds), so responses
+ * are plain JSON with no Date or Decimal instances.
  */
 
+export type ExpenseType = "expense" | "income";
+
 export interface Expense {
+  id: string;
   date: string; // ISO date, yyyy-mm-dd
+  amount: number; // pounds
   category: string;
-  amount: number;
   notes: string;
+  type: ExpenseType;
 }
 
-export type NewExpense = Expense;
+export type NewExpense = Omit<Expense, "id">;

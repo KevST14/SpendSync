@@ -1,0 +1,29 @@
+// SpendSync data model. Run `npm run db:migrate` after changing this file.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ExpenseType {
+  EXPENSE
+  INCOME
+}
+
+model Expense {
+  id        String      @id @default(cuid())
+  date      DateTime    @db.Date
+  amount    Decimal     @db.Decimal(10, 2)
+  category  String
+  notes     String      @default("")
+  type      ExpenseType @default(EXPENSE)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([date])
+  @@index([type])
+}
