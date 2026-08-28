@@ -9,6 +9,7 @@ import {
   FaChartPie,
   FaCog,
   FaPiggyBank,
+  FaSyncAlt,
   FaTachometerAlt,
   FaWallet,
 } from "react-icons/fa";
@@ -25,6 +26,7 @@ const navItems: NavItem[] = [
   { label: "Expenses", href: "/expenses", icon: FaWallet },
   { label: "Income", href: "/income", icon: FaPiggyBank },
   { label: "Budgets", href: "/budgets", icon: FaChartPie },
+  { label: "Recurring", href: "/recurring", icon: FaSyncAlt },
   { label: "Settings", href: "/settings", icon: FaCog },
 ];
 

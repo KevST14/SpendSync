@@ -14,6 +14,11 @@ enum ExpenseType {
   INCOME
 }
 
+enum Frequency {
+  WEEKLY
+  MONTHLY
+}
+
 model Expense {
   id        String      @id @default(cuid())
   date      DateTime    @db.Date
@@ -41,4 +46,18 @@ model Settings {
   id          String   @id @default("app")
   displayName String   @default("John Doe")
   updatedAt   DateTime @updatedAt
+}
+
+model RecurringRule {
+  id        String      @id @default(cuid())
+  category  String
+  amount    Decimal     @db.Decimal(10, 2)
+  notes     String      @default("")
+  type      ExpenseType @default(EXPENSE)
+  frequency Frequency   @default(MONTHLY)
+  nextDate  DateTime    @db.Date
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([nextDate])
 }

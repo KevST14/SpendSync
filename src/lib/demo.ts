@@ -236,12 +236,60 @@ export const demoBudgets: Prisma.BudgetCreateManyInput[] = [
   { category: "Transport", monthlyLimit: 60 },
 ];
 
-/** Wipe expenses + budgets and reinsert the demo dataset. */
+type DemoRecurring = {
+  category: string;
+  amount: number;
+  notes: string;
+  type: "EXPENSE" | "INCOME";
+  frequency: "WEEKLY" | "MONTHLY";
+  nextDate: string; // yyyy-mm-dd
+};
+
+export const demoRecurring: DemoRecurring[] = [
+  {
+    category: "Rent",
+    amount: 950,
+    notes: "Flat",
+    type: "EXPENSE",
+    frequency: "MONTHLY",
+    nextDate: "2026-09-01",
+  },
+  {
+    category: "Salary",
+    amount: 2400,
+    notes: "Monthly pay",
+    type: "INCOME",
+    frequency: "MONTHLY",
+    nextDate: "2026-09-05",
+  },
+  {
+    category: "Health",
+    amount: 29.99,
+    notes: "Gym membership",
+    type: "EXPENSE",
+    frequency: "MONTHLY",
+    nextDate: "2026-08-15",
+  },
+  {
+    category: "Entertainment",
+    amount: 10.99,
+    notes: "Streaming",
+    type: "EXPENSE",
+    frequency: "MONTHLY",
+    nextDate: "2026-09-02",
+  },
+];
+
+/** Wipe demo tables and reinsert the demo dataset. */
 export async function resetDemoData(prisma: PrismaClient): Promise<void> {
   await prisma.expense.deleteMany();
   await prisma.budget.deleteMany();
+  await prisma.recurringRule.deleteMany();
   await prisma.expense.createMany({
     data: demoExpenses.map((row) => ({ ...row, date: new Date(row.date) })),
   });
   await prisma.budget.createMany({ data: demoBudgets });
+  await prisma.recurringRule.createMany({
+    data: demoRecurring.map((row) => ({ ...row, nextDate: new Date(row.nextDate) })),
+  });
 }

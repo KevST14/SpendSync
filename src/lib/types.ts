@@ -26,3 +26,17 @@ export interface Budget {
 }
 
 export type NewBudget = Omit<Budget, "id">;
+
+export type Frequency = "weekly" | "monthly";
+
+export interface RecurringRule {
+  id: string;
+  category: string;
+  amount: number; // pounds
+  notes: string;
+  type: ExpenseType;
+  frequency: Frequency;
+  nextDate: string; // yyyy-mm-dd
+}
+
+export type NewRecurringRule = Omit<RecurringRule, "id">;

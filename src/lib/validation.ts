@@ -29,3 +29,18 @@ export const settingsSchema = z.object({
 });
 
 export type SettingsInput = z.infer<typeof settingsSchema>;
+
+/** Payload accepted when creating a recurring rule. */
+export const recurringSchema = z.object({
+  category: z.string().trim().min(1, "category is required").max(60),
+  amount: z.coerce.number().positive("amount must be greater than 0"),
+  notes: z.string().trim().max(280).default(""),
+  type: z.enum(["expense", "income"]).default("expense"),
+  frequency: z.enum(["weekly", "monthly"]).default("monthly"),
+  nextDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "nextDate must be yyyy-mm-dd"),
+});
+
+export const updateRecurringSchema = recurringSchema.partial();
+
+export type RecurringInput = z.infer<typeof recurringSchema>;
+export type UpdateRecurringInput = z.infer<typeof updateRecurringSchema>;
