@@ -9,7 +9,7 @@ export default function Sidebar() {
   const [active, setActive] = useState("Overview");
   const router = useRouter();
 
-  const handleNavigation = (section, path) => {
+  const handleNavigation = (section: string, path: string) => {
     setActive(section);
     router.push(path); // Navigate to the specified path
   };

@@ -1,20 +1,30 @@
-// src/app/components/AddExpenseModal.js
 "use client";
 
-import { useState } from 'react';
+import { useState } from "react";
+import type { NewExpense } from "@/lib/types";
 
-export default function AddExpenseModal({ onClose, onSave }) {
-  const [expense, setExpense] = useState({ date: "", category: "", amount: "", notes: "" });
+interface AddExpenseModalProps {
+  onClose: () => void;
+  onSave: (expense: NewExpense) => void;
+}
 
-  const handleChange = (e) => {
+export default function AddExpenseModal({ onClose, onSave }: AddExpenseModalProps) {
+  const [expense, setExpense] = useState<NewExpense>({
+    date: "",
+    category: "",
+    amount: 0,
+    notes: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setExpense({ ...expense, [name]: value });
+    setExpense({ ...expense, [name]: name === "amount" ? Number(value) : value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSave(expense); // Call the onSave function to add the expense
-    onClose(); // Close the modal after saving
+    onSave(expense);
+    onClose();
   };
 
   return (
