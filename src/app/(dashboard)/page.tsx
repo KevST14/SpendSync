@@ -72,7 +72,7 @@ export default async function DashboardPage() {
 
       <div className="charts-container mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
-          <h3 className="mb-3 text-secondary">Expenses by Category</h3>
+          <h3 className="mb-3 text-muted">Expenses by Category</h3>
           {stats.byCategory.length ? (
             <Chart
               kind="doughnut"
@@ -80,38 +80,38 @@ export default async function DashboardPage() {
               values={stats.byCategory.map((c) => c.value)}
             />
           ) : (
-            <p className="text-secondary">No expense data yet.</p>
+            <p className="text-muted">No expense data yet.</p>
           )}
         </div>
         <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
-          <h3 className="mb-3 text-secondary">Income vs. Expenses</h3>
+          <h3 className="mb-3 text-muted">Income vs. Expenses</h3>
           <Chart
             kind="bar"
             labels={monthLabels}
             values={incomeSeries}
             seriesLabel="Income"
-            color="#00ff9d"
-            series2={{ label: "Expenses", values: expenseSeries, color: "#ff4757" }}
+            color="#14e0a0"
+            series2={{ label: "Expenses", values: expenseSeries, color: "#ff5a68" }}
           />
         </div>
         <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
-          <h3 className="mb-3 text-secondary">Income Over Time</h3>
+          <h3 className="mb-3 text-muted">Income Over Time</h3>
           <Chart
             kind="line"
             labels={monthLabels}
             values={incomeSeries}
             seriesLabel="Income"
-            color="#00ff9d"
+            color="#14e0a0"
           />
         </div>
         <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
-          <h3 className="mb-3 text-secondary">Expenses Over Time</h3>
+          <h3 className="mb-3 text-muted">Expenses Over Time</h3>
           <Chart
             kind="line"
             labels={monthLabels}
             values={expenseSeries}
             seriesLabel="Expenses"
-            color="#ff4757"
+            color="#ff5a68"
           />
         </div>
       </div>
@@ -120,7 +120,7 @@ export default async function DashboardPage() {
       <div className="rounded-lg bg-surface p-6 shadow-md">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[32rem] overflow-hidden rounded-lg text-left">
-            <thead className="bg-primary text-text-primary">
+            <thead className="bg-brand text-heading">
               <tr>
                 <th className="p-3">Date</th>
                 <th className="p-3">Category</th>
@@ -131,15 +131,15 @@ export default async function DashboardPage() {
             <tbody className="bg-surface">
               {stats.recent.length === 0 && (
                 <tr>
-                  <td className="p-3 text-center text-secondary" colSpan={4}>
+                  <td className="p-3 text-center text-muted" colSpan={4}>
                     No transactions yet.
                   </td>
                 </tr>
               )}
               {stats.recent.map((t) => (
-                <tr key={t.id} className="transition-colors hover:bg-background">
+                <tr key={t.id} className="transition-colors hover:bg-elevated">
                   <td className="flex items-center p-3">
-                    <FaCalendarAlt className="mr-2 text-secondary" /> {t.date}
+                    <FaCalendarAlt className="mr-2 text-muted" /> {t.date}
                   </td>
                   <td className="p-3">{t.category}</td>
                   <td

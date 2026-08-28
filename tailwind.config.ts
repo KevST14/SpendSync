@@ -2,28 +2,34 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  darkMode: ["selector", '[data-theme="dark"]'],
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        surface: "var(--surface-color)",
-        primary: "var(--primary-color)",
-        secondary: "var(--secondary-color)",
-        accent: "var(--accent-color)",
-        "text-primary": "var(--text-primary)",
-        "text-secondary": "var(--text-secondary)",
-        success: "var(--success-color)",
-        warning: "var(--warning-color)",
-        danger: "var(--danger-color)",
+        background: "var(--color-bg)",
+        surface: "var(--color-surface)",
+        elevated: "var(--color-elevated)",
+        border: "var(--color-border)",
+        heading: "var(--color-heading)",
+        muted: "var(--color-muted)",
+        brand: {
+          DEFAULT: "var(--color-brand)",
+          soft: "var(--color-brand-soft)",
+        },
+        accent: "var(--color-accent)",
+        success: "var(--color-success)",
+        warning: "var(--color-warning)",
+        danger: "var(--color-danger)",
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
         mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
       },
-      boxShadow: {
-        custom: "0 10px 20px rgba(0, 0, 0, 0.2)",
-        glow: "0 0 15px rgba(0, 255, 240, 0.5)",
+      borderColor: {
+        DEFAULT: "var(--color-border)",
+      },
+      ringColor: {
+        DEFAULT: "var(--color-brand-soft)",
       },
     },
   },

@@ -7,11 +7,11 @@ export default function PlaceholderPage({ title, description }: PlaceholderPageP
   return (
     <div className="space-y-8">
       <header className="header rounded-lg bg-surface p-6 shadow-lg">
-        <h1 className="text-3xl font-semibold text-primary">{title}</h1>
+        <h1 className="text-3xl font-semibold text-heading">{title}</h1>
       </header>
       <section className="space-y-2 rounded-lg bg-surface p-10 text-center shadow-md">
         <p className="text-lg">{description}</p>
-        <p className="text-sm text-secondary">
+        <p className="text-sm text-muted">
           This section is coming in a later phase of the rework.
         </p>
       </section>

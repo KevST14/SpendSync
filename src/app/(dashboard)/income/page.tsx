@@ -31,14 +31,14 @@ export default async function IncomePage() {
   return (
     <div className="space-y-8">
       <header className="header rounded-lg bg-surface p-6 shadow-lg">
-        <h1 className="text-3xl font-semibold text-primary">Income</h1>
+        <h1 className="text-3xl font-semibold text-heading">Income</h1>
       </header>
 
       <section className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {cards.map(({ label, value, Icon }) => (
           <div key={label} className="stat-card rounded-lg bg-surface p-6 shadow-md">
             <Icon className="mb-2 text-2xl text-accent" />
-            <h3 className="text-lg font-medium text-secondary">{label}</h3>
+            <h3 className="text-lg font-medium text-muted">{label}</h3>
             <p className="mt-2 text-3xl font-bold text-success">{value}</p>
           </div>
         ))}
@@ -46,17 +46,17 @@ export default async function IncomePage() {
 
       <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
-          <h3 className="mb-3 text-secondary">Income Over Time</h3>
+          <h3 className="mb-3 text-muted">Income Over Time</h3>
           <Chart
             kind="line"
             labels={byMonth.map((m) => m.month)}
             values={byMonth.map((m) => m.value)}
             seriesLabel="Income"
-            color="#00ff9d"
+            color="#14e0a0"
           />
         </div>
         <div className="chart-card rounded-lg bg-surface p-6 shadow-md">
-          <h3 className="mb-3 text-secondary">Income by Source</h3>
+          <h3 className="mb-3 text-muted">Income by Source</h3>
           {byCategory.length ? (
             <Chart
               kind="doughnut"
@@ -64,41 +64,41 @@ export default async function IncomePage() {
               values={byCategory.map((c) => c.value)}
             />
           ) : (
-            <p className="text-secondary">No income recorded yet.</p>
+            <p className="text-muted">No income recorded yet.</p>
           )}
         </div>
       </section>
 
       <section className="rounded-lg bg-surface p-8 shadow-md">
-        <h2 className="mb-4 text-2xl font-semibold text-primary">Income Entries</h2>
+        <h2 className="mb-4 text-2xl font-semibold text-heading">Income Entries</h2>
         <div className="overflow-x-auto rounded-lg">
           <table className="w-full min-w-[32rem] border-collapse text-left">
             <thead>
-              <tr className="bg-primary text-white">
-                <th className="border-b border-secondary p-3">Date</th>
-                <th className="border-b border-secondary p-3">Source</th>
-                <th className="border-b border-secondary p-3">Amount</th>
-                <th className="border-b border-secondary p-3">Notes</th>
+              <tr className="bg-brand text-white">
+                <th className="border-b border-border p-3">Date</th>
+                <th className="border-b border-border p-3">Source</th>
+                <th className="border-b border-border p-3">Amount</th>
+                <th className="border-b border-border p-3">Notes</th>
               </tr>
             </thead>
             <tbody>
               {income.length === 0 && (
                 <tr>
-                  <td className="p-3 text-center text-secondary" colSpan={4}>
+                  <td className="p-3 text-center text-muted" colSpan={4}>
                     No income recorded yet. Add one from the Expenses page.
                   </td>
                 </tr>
               )}
               {income.map((entry) => (
-                <tr key={entry.id} className="transition-colors hover:bg-background">
-                  <td className="flex items-center border-b border-secondary p-3">
-                    <FaCalendarAlt className="mr-2 text-secondary" /> {entry.date}
+                <tr key={entry.id} className="transition-colors hover:bg-elevated">
+                  <td className="flex items-center border-b border-border p-3">
+                    <FaCalendarAlt className="mr-2 text-muted" /> {entry.date}
                   </td>
-                  <td className="border-b border-secondary p-3">{entry.category}</td>
-                  <td className="border-b border-secondary p-3 font-semibold text-success">
+                  <td className="border-b border-border p-3">{entry.category}</td>
+                  <td className="border-b border-border p-3 font-semibold text-success">
                     + {formatGBP(entry.amount)}
                   </td>
-                  <td className="border-b border-secondary p-3">{entry.notes}</td>
+                  <td className="border-b border-border p-3">{entry.notes}</td>
                 </tr>
               ))}
             </tbody>

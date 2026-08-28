@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaCheck, FaPen, FaTrash } from "react-icons/fa";
+import Button from "./Button";
 import { formatGBP } from "@/lib/format";
 import type { Budget } from "@/lib/types";
 
@@ -66,16 +67,16 @@ export default function BudgetManager({
     <div className="space-y-8">
       {/* Set / update a budget */}
       <section className="rounded-lg bg-surface p-6 shadow-md">
-        <h2 className="mb-4 text-xl font-semibold text-primary">Set a budget</h2>
+        <h2 className="mb-4 text-xl font-semibold text-heading">Set a budget</h2>
         <div className="flex flex-wrap items-end gap-4">
-          <label className="flex flex-col gap-1 text-sm text-secondary">
+          <label className="flex flex-col gap-1 text-sm text-muted">
             Category
             <input
               list="known-categories"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               placeholder="e.g. Groceries"
-              className="rounded-lg bg-background p-3 text-primary shadow-md focus:outline-none"
+              className="rounded-lg bg-elevated p-3 text-heading shadow-md focus:outline-none"
             />
             <datalist id="known-categories">
               {knownCategories.map((c) => (
@@ -83,7 +84,7 @@ export default function BudgetManager({
               ))}
             </datalist>
           </label>
-          <label className="flex flex-col gap-1 text-sm text-secondary">
+          <label className="flex flex-col gap-1 text-sm text-muted">
             Monthly limit (£)
             <input
               type="number"
@@ -92,37 +93,37 @@ export default function BudgetManager({
               value={limit}
               onChange={(e) => setLimit(e.target.value)}
               placeholder="0.00"
-              className="rounded-lg bg-background p-3 text-primary shadow-md focus:outline-none"
+              className="rounded-lg bg-elevated p-3 text-heading shadow-md focus:outline-none"
             />
           </label>
-          <button
+          <Button
             onClick={save}
             disabled={busy || !category.trim() || Number(limit) <= 0}
-            className="flex items-center rounded-lg bg-primary px-4 py-3 text-white shadow-md transition-transform hover:scale-105 hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="py-3"
           >
-            <FaCheck className="mr-2" /> {busy ? "Saving…" : "Save budget"}
-          </button>
+            <FaCheck /> {busy ? "Saving…" : "Save budget"}
+          </Button>
         </div>
       </section>
 
       {/* Budget progress */}
       <section className="space-y-4 rounded-lg bg-surface p-6 shadow-md">
-        <h2 className="text-xl font-semibold text-primary">This month</h2>
-        {budgets.length === 0 && <p className="text-secondary">No budgets set yet.</p>}
+        <h2 className="text-xl font-semibold text-heading">This month</h2>
+        {budgets.length === 0 && <p className="text-muted">No budgets set yet.</p>}
         {budgets.map((b) => {
           const spent = spendByCategory[b.category] ?? 0;
           const ratio = spent / b.monthlyLimit;
           const remaining = b.monthlyLimit - spent;
           return (
-            <div key={b.id} className="rounded-lg bg-background p-4">
+            <div key={b.id} className="rounded-lg bg-elevated p-4">
               <div className="mb-2 flex items-center justify-between">
                 <span className="font-semibold">{b.category}</span>
-                <span className="flex items-center gap-3 text-sm text-secondary">
+                <span className="flex items-center gap-3 text-sm text-muted">
                   {formatGBP(spent)} / {formatGBP(b.monthlyLimit)}
                   <button
                     aria-label={`Edit ${b.category} budget`}
                     onClick={() => startEdit(b)}
-                    className="transition-colors hover:text-primary"
+                    className="transition-colors hover:text-brand"
                   >
                     <FaPen />
                   </button>
@@ -142,7 +143,7 @@ export default function BudgetManager({
                 />
               </div>
               <p
-                className={`mt-1 text-sm ${remaining < 0 ? "text-danger" : "text-secondary"}`}
+                className={`mt-1 text-sm ${remaining < 0 ? "text-danger" : "text-muted"}`}
               >
                 {remaining < 0
                   ? `${formatGBP(Math.abs(remaining))} over budget`
@@ -156,21 +157,21 @@ export default function BudgetManager({
       {/* Unbudgeted spend */}
       {unbudgeted.length > 0 && (
         <section className="space-y-3 rounded-lg bg-surface p-6 shadow-md">
-          <h2 className="text-xl font-semibold text-primary">Unbudgeted this month</h2>
+          <h2 className="text-xl font-semibold text-heading">Unbudgeted this month</h2>
           {unbudgeted.map((c) => (
             <div
               key={c}
-              className="flex items-center justify-between rounded-lg bg-background p-3"
+              className="flex items-center justify-between rounded-lg bg-elevated p-3"
             >
               <span>{c}</span>
-              <span className="flex items-center gap-3 text-secondary">
+              <span className="flex items-center gap-3 text-muted">
                 {formatGBP(spendByCategory[c])}
                 <button
                   onClick={() => {
                     setCategory(c);
                     setLimit("");
                   }}
-                  className="text-sm text-primary hover:underline"
+                  className="text-sm text-heading hover:underline"
                 >
                   Set budget
                 </button>

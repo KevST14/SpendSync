@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   ArcElement,
   BarElement,
@@ -29,46 +29,76 @@ ChartJS.register(
   Tooltip,
 );
 
-const GRID = "rgba(255, 255, 255, 0.08)";
-const TICK = "#b3b3b3";
-const SURFACE = "#1a1a2e";
-const DEFAULT_PALETTE = ["#4a00e0", "#8e2de2", "#00fff0", "#ffd700", "#ff4757"];
+const DEFAULT_PALETTE = ["#6a34e8", "#8e2de2", "#00e0d0", "#ffce3d", "#ff5a68"];
 
 function hexToRgba(hex: string, alpha: number): string {
   const n = parseInt(hex.replace("#", ""), 16);
   return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
 }
 
-const moneyAxes = {
-  x: { grid: { color: GRID }, ticks: { color: TICK } },
-  y: {
-    grid: { color: GRID },
-    ticks: {
-      color: TICK,
-      callback: (value: string | number) => `£${value}`,
-    },
-  },
-};
+function readVar(name: string, fallback: string): string {
+  if (typeof window === "undefined") return fallback;
+  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return value || fallback;
+}
+
+/** Re-render whenever the theme changes so chart.js internals recolour. */
+function useThemeTick(): number {
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const bump = () => setTick((t) => t + 1);
+    const observer = new MutationObserver(bump);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    const media = window.matchMedia("(prefers-color-scheme: light)");
+    media.addEventListener("change", bump);
+    return () => {
+      observer.disconnect();
+      media.removeEventListener("change", bump);
+    };
+  }, []);
+  return tick;
+}
 
 export default function ChartCanvas({
   kind,
   labels,
   values,
   seriesLabel = "",
-  color = "#00fff0",
+  color = "var-accent",
   series2,
   palette = DEFAULT_PALETTE,
   height = 260,
 }: ChartProps) {
+  useThemeTick();
+
+  const grid = readVar("--color-border", "rgba(255,255,255,0.09)");
+  const tick = readVar("--color-muted", "#b0b0c8");
+  const surface = readVar("--color-surface", "#1a1a2e");
+  const accent = readVar("--color-accent", "#00e0d0");
+  const lineColor = color === "var-accent" ? accent : color;
+
   const wrap = (node: ReactNode) => <div style={{ height }}>{node}</div>;
   const showLegend = Boolean(series2);
-  const legend = { display: showLegend, labels: { color: TICK } } as const;
+  const legend = { display: showLegend, labels: { color: tick } } as const;
+  const moneyAxes = {
+    x: { grid: { color: grid }, ticks: { color: tick } },
+    y: {
+      grid: { color: grid },
+      ticks: {
+        color: tick,
+        callback: (value: string | number) => `£${value}`,
+      },
+    },
+  };
 
   if (kind === "doughnut") {
     const options: ChartOptions<"doughnut"> = {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { position: "bottom", labels: { color: TICK } } },
+      plugins: { legend: { position: "bottom", labels: { color: tick } } },
     };
     return wrap(
       <Doughnut
@@ -80,7 +110,7 @@ export default function ChartCanvas({
               label: seriesLabel,
               data: values,
               backgroundColor: palette,
-              borderColor: SURFACE,
+              borderColor: surface,
               borderWidth: 2,
             },
           ],
@@ -110,9 +140,9 @@ export default function ChartCanvas({
         data={{
           labels,
           datasets: [
-            bar(seriesLabel, values, color),
+            bar(seriesLabel, values, lineColor),
             ...(series2
-              ? [bar(series2.label, series2.values, series2.color ?? "#ff4757")]
+              ? [bar(series2.label, series2.values, series2.color ?? "#ff5a68")]
               : []),
           ],
         }}
@@ -141,9 +171,9 @@ export default function ChartCanvas({
       data={{
         labels,
         datasets: [
-          line(seriesLabel, values, color, !series2),
+          line(seriesLabel, values, lineColor, !series2),
           ...(series2
-            ? [line(series2.label, series2.values, series2.color ?? "#ff4757", false)]
+            ? [line(series2.label, series2.values, series2.color ?? "#ff5a68", false)]
             : []),
         ],
       }}

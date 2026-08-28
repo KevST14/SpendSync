@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { FaPlus, FaSearch, FaCheck, FaTimes, FaTrash } from "react-icons/fa";
+import Button from "@/app/components/Button";
 import Chart from "@/app/components/Chart";
 import { formatGBP } from "@/lib/format";
 import type { Expense, NewExpense } from "@/lib/types";
@@ -114,7 +115,7 @@ export default function ExpensesPage() {
   return (
     <div className="expenses-page space-y-10">
       <header className="header flex items-center justify-between rounded-lg bg-surface p-6 shadow-lg">
-        <h1 className="text-3xl font-semibold text-primary">Expenses Overview</h1>
+        <h1 className="text-3xl font-semibold text-heading">Expenses Overview</h1>
       </header>
 
       {/* Overview Cards */}
@@ -147,7 +148,7 @@ export default function ExpensesPage() {
             key={label}
             className="stat-card rounded-lg bg-surface p-6 shadow-md transition-shadow hover:shadow-lg"
           >
-            <h3 className="text-lg font-medium text-secondary">{label}</h3>
+            <h3 className="text-lg font-medium text-muted">{label}</h3>
             <p className={`mt-2 text-3xl font-bold ${color}`}>{value}</p>
           </div>
         ))}
@@ -155,7 +156,7 @@ export default function ExpensesPage() {
 
       {/* Expense By Category Chart Card */}
       <section className="chart-section rounded-lg bg-surface p-6 shadow-md">
-        <h2 className="mb-4 text-2xl font-semibold text-primary">Expenses by Category</h2>
+        <h2 className="mb-4 text-2xl font-semibold text-heading">Expenses by Category</h2>
         {totals.categoryValues.length ? (
           <div className="mx-auto max-w-md">
             <Chart
@@ -166,43 +167,40 @@ export default function ExpensesPage() {
             />
           </div>
         ) : (
-          <p className="text-secondary">No expense data yet.</p>
+          <p className="text-muted">No expense data yet.</p>
         )}
       </section>
 
       {/* Expense List */}
       <section className="expense-list space-y-6 rounded-lg bg-surface p-8 shadow-md">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <h2 className="text-2xl font-semibold text-primary">Expense List</h2>
+          <h2 className="text-2xl font-semibold text-heading">Expense List</h2>
           <div className="flex items-center gap-4">
             <div className="relative flex items-center">
               <input
                 type="text"
                 placeholder="Search expenses..."
-                className="rounded-lg bg-background p-3 pr-9 text-primary shadow-md focus:outline-none"
+                className="rounded-lg bg-elevated p-3 pr-9 text-heading shadow-md focus:outline-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <FaSearch className="absolute right-3 text-secondary" />
+              <FaSearch className="absolute right-3 text-muted" />
             </div>
-            <button
-              onClick={() => setShowForm((v) => !v)}
-              className="flex items-center rounded-lg bg-primary px-4 py-2 text-white shadow-md transition-transform hover:scale-105 hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
-            >
-              <FaPlus className="mr-2" /> Add New Expense
-            </button>
+            <Button onClick={() => setShowForm((v) => !v)}>
+              <FaPlus /> Add New Expense
+            </Button>
           </div>
         </div>
 
         {showForm && (
-          <div className="add-expense-section space-y-4 rounded-lg bg-background p-6 shadow-inner">
+          <div className="add-expense-section space-y-4 rounded-lg bg-elevated p-6 shadow-inner">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <input
                 type="date"
                 name="date"
                 value={form.date}
                 onChange={handleFormChange}
-                className="rounded-lg bg-surface p-3 text-primary shadow-md focus:outline-none"
+                className="rounded-lg bg-surface p-3 text-heading shadow-md focus:outline-none"
               />
               <input
                 type="text"
@@ -210,7 +208,7 @@ export default function ExpensesPage() {
                 placeholder="Category"
                 value={form.category}
                 onChange={handleFormChange}
-                className="rounded-lg bg-surface p-3 text-primary shadow-md focus:outline-none"
+                className="rounded-lg bg-surface p-3 text-heading shadow-md focus:outline-none"
               />
               <input
                 type="number"
@@ -220,13 +218,13 @@ export default function ExpensesPage() {
                 placeholder="Amount (£)"
                 value={form.amount || ""}
                 onChange={handleFormChange}
-                className="rounded-lg bg-surface p-3 text-primary shadow-md focus:outline-none"
+                className="rounded-lg bg-surface p-3 text-heading shadow-md focus:outline-none"
               />
               <select
                 name="type"
                 value={form.type}
                 onChange={handleFormChange}
-                className="rounded-lg bg-surface p-3 text-primary shadow-md focus:outline-none"
+                className="rounded-lg bg-surface p-3 text-heading shadow-md focus:outline-none"
               >
                 <option value="expense">Expense</option>
                 <option value="income">Income</option>
@@ -238,25 +236,24 @@ export default function ExpensesPage() {
               placeholder="Notes"
               value={form.notes}
               onChange={handleFormChange}
-              className="w-full rounded-lg bg-surface p-3 text-primary shadow-md focus:outline-none"
+              className="w-full rounded-lg bg-surface p-3 text-heading shadow-md focus:outline-none"
             />
             <div className="flex justify-end gap-4">
-              <button
-                className="flex items-center rounded-lg bg-secondary px-4 py-2 text-white shadow-md transition-transform hover:scale-105 hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-opacity-50"
+              <Button
+                variant="ghost"
                 onClick={() => {
                   setForm(emptyForm);
                   setShowForm(false);
                 }}
               >
-                <FaTimes className="mr-2" /> Cancel
-              </button>
-              <button
+                <FaTimes /> Cancel
+              </Button>
+              <Button
                 disabled={saving || !form.category || form.amount <= 0}
-                className="flex items-center rounded-lg bg-success px-4 py-2 text-white shadow-md transition-transform hover:scale-105 hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-success focus:ring-opacity-50 disabled:cursor-not-allowed disabled:opacity-50"
                 onClick={addExpense}
               >
-                <FaCheck className="mr-2" /> {saving ? "Saving…" : "Save Expense"}
-              </button>
+                <FaCheck /> {saving ? "Saving…" : "Save Expense"}
+              </Button>
             </div>
           </div>
         )}
@@ -264,18 +261,18 @@ export default function ExpensesPage() {
         <div className="overflow-x-auto rounded-lg">
           <table className="w-full min-w-[40rem] border-collapse text-left">
             <thead>
-              <tr className="bg-primary text-white">
-                <th className="border-b border-secondary p-3">Date</th>
-                <th className="border-b border-secondary p-3">Category</th>
-                <th className="border-b border-secondary p-3">Amount</th>
-                <th className="border-b border-secondary p-3">Notes</th>
-                <th className="border-b border-secondary p-3 text-right">Actions</th>
+              <tr className="bg-brand text-white">
+                <th className="border-b border-border p-3">Date</th>
+                <th className="border-b border-border p-3">Category</th>
+                <th className="border-b border-border p-3">Amount</th>
+                <th className="border-b border-border p-3">Notes</th>
+                <th className="border-b border-border p-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {status === "loading" && (
                 <tr>
-                  <td className="p-3 text-center text-secondary" colSpan={5}>
+                  <td className="p-3 text-center text-muted" colSpan={5}>
                     Loading…
                   </td>
                 </tr>
@@ -289,30 +286,30 @@ export default function ExpensesPage() {
               )}
               {status === "ready" && filtered.length === 0 && (
                 <tr>
-                  <td className="p-3 text-center text-secondary" colSpan={5}>
+                  <td className="p-3 text-center text-muted" colSpan={5}>
                     No expenses found.
                   </td>
                 </tr>
               )}
               {status === "ready" &&
                 filtered.map((expense) => (
-                  <tr key={expense.id} className="transition-colors hover:bg-background">
-                    <td className="border-b border-secondary p-3">{expense.date}</td>
-                    <td className="border-b border-secondary p-3">{expense.category}</td>
+                  <tr key={expense.id} className="transition-colors hover:bg-elevated">
+                    <td className="border-b border-border p-3">{expense.date}</td>
+                    <td className="border-b border-border p-3">{expense.category}</td>
                     <td
-                      className={`border-b border-secondary p-3 font-semibold ${
+                      className={`border-b border-border p-3 font-semibold ${
                         expense.type === "income" ? "text-success" : "text-danger"
                       }`}
                     >
                       {expense.type === "income" ? "+ " : "- "}
                       {formatGBP(expense.amount)}
                     </td>
-                    <td className="border-b border-secondary p-3">{expense.notes}</td>
-                    <td className="border-b border-secondary p-3 text-right">
+                    <td className="border-b border-border p-3">{expense.notes}</td>
+                    <td className="border-b border-border p-3 text-right">
                       <button
                         aria-label={`Delete ${expense.category} entry`}
                         onClick={() => deleteExpense(expense.id)}
-                        className="text-secondary transition-colors hover:text-danger"
+                        className="text-muted transition-colors hover:text-danger"
                       >
                         <FaTrash />
                       </button>

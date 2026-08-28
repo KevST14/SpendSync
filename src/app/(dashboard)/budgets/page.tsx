@@ -29,10 +29,8 @@ export default async function BudgetsPage() {
   return (
     <div className="space-y-8">
       <header className="header rounded-lg bg-surface p-6 shadow-lg">
-        <h1 className="text-3xl font-semibold text-primary">Budgets</h1>
-        <p className="mt-1 text-secondary">
-          Monthly limits vs. actual spend for {monthName}
-        </p>
+        <h1 className="text-3xl font-semibold text-heading">Budgets</h1>
+        <p className="mt-1 text-muted">Monthly limits vs. actual spend for {monthName}</p>
       </header>
 
       <BudgetManager

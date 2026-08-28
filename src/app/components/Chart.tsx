@@ -32,7 +32,7 @@ export interface ChartProps {
 const ChartCanvas = dynamic(() => import("./ChartCanvas"), {
   ssr: false,
   loading: () => (
-    <div className="flex h-[260px] items-center justify-center text-secondary">
+    <div className="flex h-[260px] items-center justify-center text-muted">
       Loading chart…
     </div>
   ),
