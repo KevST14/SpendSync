@@ -17,6 +17,10 @@ const config: Config = {
         warning: "var(--warning-color)",
         danger: "var(--danger-color)",
       },
+      fontFamily: {
+        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
+      },
       boxShadow: {
         custom: "0 10px 20px rgba(0, 0, 0, 0.2)",
         glow: "0 0 15px rgba(0, 255, 240, 0.5)",

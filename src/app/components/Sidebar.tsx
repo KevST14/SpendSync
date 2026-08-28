@@ -1,57 +1,63 @@
-// src/app/components/Sidebar.js
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { FaTachometerAlt, FaWallet, FaPiggyBank, FaChartPie, FaCog } from "react-icons/fa";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type { IconType } from "react-icons";
+import {
+  FaTachometerAlt,
+  FaWallet,
+  FaPiggyBank,
+  FaChartPie,
+  FaCog,
+} from "react-icons/fa";
+
+interface NavItem {
+  label: string;
+  href: string;
+  icon: IconType;
+}
+
+const navItems: NavItem[] = [
+  { label: "Overview", href: "/", icon: FaTachometerAlt },
+  { label: "Expenses", href: "/expenses", icon: FaWallet },
+  { label: "Income", href: "/income", icon: FaPiggyBank },
+  { label: "Budgets", href: "/budgets", icon: FaChartPie },
+  { label: "Settings", href: "/settings", icon: FaCog },
+];
+
+function isActive(pathname: string, href: string): boolean {
+  return href === "/" ? pathname === "/" : pathname.startsWith(href);
+}
 
 export default function Sidebar() {
-  const [active, setActive] = useState("Overview");
-  const router = useRouter();
-
-  const handleNavigation = (section: string, path: string) => {
-    setActive(section);
-    router.push(path); // Navigate to the specified path
-  };
+  const pathname = usePathname();
 
   return (
-    <aside className="sidebar w-64 h-screen bg-surface p-6 shadow-lg flex flex-col">
-      <div className="sidebar-header flex items-center mb-10">
-        <img src="https://via.placeholder.com/50" alt="Logo" className="logo rounded-full shadow-md mr-3" />
-        <h2 className="text-accent font-bold text-2xl">SpendSync</h2>
+    <aside className="sidebar">
+      <div className="sidebar-header">
+        <span className="sidebar-logo" aria-hidden="true">
+          S
+        </span>
+        <h2 className="text-2xl font-bold text-accent">SpendSync</h2>
       </div>
-      <ul className="nav-links flex flex-col gap-4">
-        <li 
-          className={`nav-item ${active === "Overview" ? "active" : ""}`} 
-          onClick={() => handleNavigation("Overview", "/")}
-        >
-          <FaTachometerAlt className="mr-3" /> Overview
-        </li>
-        <li 
-          className={`nav-item ${active === "Expenses" ? "active" : ""}`} 
-          onClick={() => handleNavigation("Expenses", "/expenses")}
-        >
-          <FaWallet className="mr-3" /> Expenses
-        </li>
-        <li 
-          className={`nav-item ${active === "Income" ? "active" : ""}`} 
-          onClick={() => handleNavigation("Income", "/income")}
-        >
-          <FaPiggyBank className="mr-3" /> Income
-        </li>
-        <li 
-          className={`nav-item ${active === "Budgets" ? "active" : ""}`} 
-          onClick={() => handleNavigation("Budgets", "/budgets")}
-        >
-          <FaChartPie className="mr-3" /> Budgets
-        </li>
-        <li 
-          className={`nav-item ${active === "Settings" ? "active" : ""}`} 
-          onClick={() => handleNavigation("Settings", "/settings")}
-        >
-          <FaCog className="mr-3" /> Settings
-        </li>
-      </ul>
+      <nav>
+        <ul className="nav-links">
+          {navItems.map(({ label, href, icon: Icon }) => {
+            const active = isActive(pathname, href);
+            return (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className={`nav-item ${active ? "active" : ""}`}
+                  aria-current={active ? "page" : undefined}
+                >
+                  <Icon className="mr-3" aria-hidden="true" /> {label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
     </aside>
   );
 }
