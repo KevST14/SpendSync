@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import CommandPalette from "@/app/components/CommandPalette";
 import Sidebar from "@/app/components/Sidebar";
 import Topbar from "@/app/components/Topbar";
 import { ToastProvider } from "@/app/components/Toast";
@@ -11,6 +12,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
   return (
     <ToastProvider>
+      <CommandPalette />
       <div className="app-shell">
         <Sidebar />
         <div className="app-main">

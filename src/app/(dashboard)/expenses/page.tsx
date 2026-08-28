@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { FaPen, FaPlus, FaSort, FaSortDown, FaSortUp, FaTrash } from "react-icons/fa";
 import Button from "@/app/components/Button";
 import Chart from "@/app/components/Chart";
@@ -25,12 +26,13 @@ type SortKey = "date" | "category" | "amount";
 
 export default function ExpensesPage() {
   const { toast } = useToast();
+  const openForm = useSearchParams().get("add") === "1";
 
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [saving, setSaving] = useState(false);
 
-  const [formOpen, setFormOpen] = useState(false);
+  const [formOpen, setFormOpen] = useState(openForm);
   const [editing, setEditing] = useState<Expense | null>(null);
 
   const [search, setSearch] = useState("");

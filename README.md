@@ -48,7 +48,7 @@ npm run db:seed         # insert sample expenses
 npm run dev
 ```
 
-Open http://localhost:3000.
+Open http://localhost:3000. Press ⌘K / Ctrl+K anywhere for the command palette.
 
 ## Scripts
 
