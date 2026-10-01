@@ -1,5 +1,15 @@
 # SpendSync
 
+[![CI](https://github.com/KevST14/SpendSync/actions/workflows/ci.yml/badge.svg)](https://github.com/KevST14/SpendSync/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/KevST14/SpendSync)](LICENSE)
+![Next.js](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
+![Last commit](https://img.shields.io/github/last-commit/KevST14/SpendSync)
+
 A personal finance dashboard — track expenses and income, see spend by
 category, and review recent activity. Built with the Next.js App Router.
 
